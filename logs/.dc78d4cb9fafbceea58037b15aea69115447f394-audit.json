@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/home/cyril/src/claude-config/logs/.dc78d4cb9fafbceea58037b15aea69115447f394-audit.json",
+    "files": [
+        {
+            "date": 1773478565191,
+            "name": "/home/cyril/src/claude-config/logs/mcp-puppeteer-2026-03-14.log",
+            "hash": "ed5f7358bdb478acc0dd6a5f7fa15c4cd77112daa85374c7a51f2bf8b55d3a20"
+        }
+    ],
+    "hashType": "sha256"
+}

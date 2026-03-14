@@ -22,7 +22,7 @@ EXT="${FILE##*.}"
 
 case "$EXT" in
   py)
-    black --quiet "$FILE" 2>/dev/null || true
+    ruff format --quiet "$FILE" 2>/dev/null || true
     ruff check --fix --quiet "$FILE" 2>/dev/null || true
     ;;
   rs)

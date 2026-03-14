@@ -52,7 +52,7 @@ for d in "$CONFIG_DIR/skills/"/*/; do
 done
 
 # Skills upstream Anthropic (si le submodule est initialisé)
-ANTHROPIC_SKILLS="$CONFIG_DIR/upstream/anthropic-skills/public"
+ANTHROPIC_SKILLS="$CONFIG_DIR/upstream/anthropic-skills/skills"
 if [ -d "$ANTHROPIC_SKILLS" ]; then
     for d in "$ANTHROPIC_SKILLS/"/*/; do
         [ -d "$d" ] || continue

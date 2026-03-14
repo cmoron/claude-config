@@ -1,14 +1,18 @@
 ---
 name: python-dev
-description: Activez pour Python : FastAPI, Django, scripts, scraping, data processing. Type hints, black, ruff, pytest. Projets mypacer_api, mypacer_scraper, bases_athle_scrapper.
+description: Activez pour Python : FastAPI, Django, scripts, scraping, data processing. uv, ruff, mypy, pytest. Projets mypacer_api, mypacer_scraper, bases_athle_scrapper.
 ---
 # Python Development — 3.12+
 
+## Toolchain
+- `uv` pour tout : deps, venv, run — jamais `pip install` directement
+- `ruff format` pour formatting (remplace black), `ruff check` pour linting
+- `mypy` en mode strict pour les type checks
+- `pytest` avec fixtures — jamais `unittest` directement
+
 ## Conventions obligatoires
 - Type hints partout : `def f(x: int) -> str:`
-- `black` pour formatting (line-length=88, défaut)
-- `ruff` pour linting : règles E, F, I, UP, B activées
-- `pytest` avec fixtures — jamais `unittest` directement
+- Règles ruff actives : E, F, I, UP, B, ANN
 
 ## FastAPI patterns
 ```python
