@@ -9,7 +9,9 @@ Configuration personnelle de Claude Code — agents, commandes, skills, hooks et
 claude   # Claude Code CLI
 git
 jq       # utilisé par le statusline (apt install jq / brew install jq)
-node     # pour ccstatusline (npx)
+node     # pour ccstatusline et mgrep (npx)
+rg       # ripgrep — utilisé par le Grep intégré de Claude (apt install ripgrep / brew install ripgrep)
+mgrep    # recherche sémantique + web synthétisé : npm install -g mgrep
 
 # Par stack
 uv       # Python (remplace pip/venv/poetry)
