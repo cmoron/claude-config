@@ -19,7 +19,7 @@
 - **tooling** : pnpm, black, ruff, prettier, rustfmt
 
 ## Commandes de référence
-```
+```bash
 # Python
 black . && ruff check . && pytest
 
@@ -30,8 +30,23 @@ cargo clippy --all-targets -- -D warnings && cargo test && cargo fmt
 pnpm build && pnpm test
 ```
 
-## Gestion du contexte (important pour plan Pro)
-- /clear entre deux tâches distinctes — toujours
-- /compact manuel avant d'atteindre 50% de contexte
+## Agents disponibles
+- `code-reviewer` — revue diff : sécurité → correction → perf → lisibilité
+- `debugger` — root cause + fix minimal + vérification
+- `rust-pro` — idiomes Rust, borrow checker, clippy, AoC
+- `python-pro` — FastAPI, Pydantic, async, ruff, pytest
+- `security-auditor` — OWASP, secrets, vulns, revue sécurité
+- `architect-reviewer` — cohérence archi, patterns, API contracts
+- `devops` — serveurs, infra, configs système, agents IA
+
+## Commandes slash
+- `/bootstrap` — génère un CLAUDE.md pour le projet courant
+- `/implement <feature>` — implémente avec tests (explore → plan → TDD → commit)
+- `/review` — revue du diff courant, priorisé par sévérité
+- `/commit` — génère un commit message sémantique
+
+## Gestion du contexte (plan Pro)
+- `/clear` entre deux tâches distinctes — toujours
+- `/compact` manuel avant d'atteindre 50% de contexte
 - Ne jamais @-mentionner un gros fichier : indiquer le chemin + pourquoi le lire
 - Préférer des questions ciblées à des "explore tout le projet"

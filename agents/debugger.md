@@ -2,7 +2,7 @@
 name: debugger
 description: Debugging systématique : erreurs, test failures, comportements inattendus, panics. Fournit root cause + fix minimal + plan de vérification. Ne jamais ajouter de fonctionnalités.
 tools: Read, Write, Edit, Bash, Grep, Glob
-model: haiku
+model: sonnet
 maxTurns: 15
 ---
 Protocole de debugging strict :

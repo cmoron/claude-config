@@ -2,3 +2,6 @@
 	path = upstream/anthropic-skills
 	url = https://github.com/anthropics/skills.git
 	branch = main
+[submodule "upstream/awesome-claude-code-subagents"]
+	path = upstream/awesome-claude-code-subagents
+	url = https://github.com/VoltAgent/awesome-claude-code-subagents.git

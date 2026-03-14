@@ -1,5 +1,5 @@
 ---
-description: Revue du diff actuel (staged + unstaged). Usage : /review
+description: Revue du diff actuel (staged + unstaged). Usage : /review [focus]
 allowed-tools: Read, Bash, Glob, Grep
 ---
 Fais une revue complète du diff en cours :
@@ -14,6 +14,8 @@ Si le diff est vide, regarder les derniers commits :
 git log --oneline -5
 git show HEAD
 ```
+
+Focus optionnel : $ARGUMENTS (ex: "security", "performance", "tests")
 
 Analyse par priorité décroissante :
 1. Sécurité et data integrity

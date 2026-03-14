@@ -59,7 +59,7 @@ async def test_create_item(client):
 
 ## Scraping (BeautifulSoup)
 ```python
-import time
+import asyncio
 import httpx
 from bs4 import BeautifulSoup
 
