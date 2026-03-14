@@ -32,16 +32,34 @@ pnpm build && pnpm test
 
 ## Agents disponibles
 Agents actifs dans `~/.claude/agents/` :
+
+**Conception & architecture**
+- `software-architect` — choix de stack, ADR, conception macro, trade-offs (Opus)
+- `architect-reviewer` — cohérence archi, patterns, API contracts sur code existant
+
+**Développement**
+- `fullstack-developer` — features complètes DB→API→UI
+- `api-designer` — design REST/GraphQL, OpenAPI, versioning
+- `ui-designer` — design system, composants, accessibilité
+- `python-pro` — FastAPI, Pydantic, async, uv, ruff, mypy, pytest
+- `rust-pro` — idiomes Rust, borrow checker, clippy, AoC
+
+**Qualité & sécurité**
 - `code-reviewer` — revue diff : sécurité → correction → perf → lisibilité
 - `debugger` — root cause + fix minimal + vérification
-- `rust-pro` — idiomes Rust, borrow checker, clippy, AoC
-- `python-pro` — FastAPI, Pydantic, async, uv, ruff, mypy, pytest
 - `security-auditor` — OWASP, secrets, vulns, revue sécurité
-- `architect-reviewer` — cohérence archi, patterns, API contracts
-- `devops` — serveurs, infra, configs système, agents IA
+- `penetration-tester` — tests d'intrusion, exploitation, rapport
+- `compliance-auditor` — conformité GDPR, SOC2, ISO 27001
 
-Bibliothèque de référence (127+ agents) : `~/src/claude-config/upstream/awesome-claude-code-subagents/`
-→ Si un besoin émerge, copier l'agent pertinent dans `~/.claude/agents/` et l'adapter.
+**Infrastructure & ops**
+- `devops` — serveurs, infra, CI/CD, configs système (custom)
+- `docker-expert` — images Docker, multi-stage builds, sécurité conteneurs
+- `deployment-engineer` — pipelines CI/CD, stratégies de déploiement
+- `sre-engineer` — SLO/SLI, observabilité, fiabilité, incident response
+- `it-ops-orchestrator` — coordination multi-agents pour tâches ops complexes
+
+Bibliothèque de référence (141 agents) : `~/src/claude-config/upstream/awesome-claude-code-subagents/`
+→ Si un besoin émerge, copier l'agent pertinent dans `agents/` et l'adapter.
 
 ## Commandes slash
 - `/bootstrap` — génère un CLAUDE.md pour le projet courant

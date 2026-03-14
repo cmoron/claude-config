@@ -47,7 +47,7 @@ done
 for d in "$CONFIG_DIR/skills/"/*/; do
     [ -d "$d" ] || continue
     name=$(basename "$d")
-    ln -sf "$d" "$CLAUDE_DIR/skills/$name"
+    ln -sfn "$d" "$CLAUDE_DIR/skills/$name"
     echo "  ✓ ~/.claude/skills/$name"
 done
 
@@ -59,7 +59,7 @@ if [ -d "$ANTHROPIC_SKILLS" ]; then
         name=$(basename "$d")
         # Ne pas écraser un skill personnel de même nom
         if [ ! -e "$CLAUDE_DIR/skills/$name" ]; then
-            ln -sf "$d" "$CLAUDE_DIR/skills/$name"
+            ln -sfn "$d" "$CLAUDE_DIR/skills/$name"
             echo "  ✓ ~/.claude/skills/$name (anthropic)"
         fi
     done
