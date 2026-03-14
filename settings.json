@@ -25,7 +25,8 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash $HOME/src/claude-config/scripts/statusline.sh"
+    "command": "npx -y ccstatusline@latest",
+    "padding": 0
   },
   "hooks": {
     "PostToolUse": [
@@ -49,6 +50,16 @@
             "command": "$HOME/src/claude-config/scripts/protect-env.sh"
           }
         ]
+      },
+      {
+        "_tag": "ccstatusline-managed",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y ccstatusline@latest --hook"
+          }
+        ],
+        "matcher": "Skill"
       }
     ],
     "Stop": [
@@ -69,6 +80,17 @@
             "type": "command",
             "command": "$HOME/src/claude-config/scripts/bell.sh",
             "timeout": 3
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "_tag": "ccstatusline-managed",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx -y ccstatusline@latest --hook"
           }
         ]
       }
