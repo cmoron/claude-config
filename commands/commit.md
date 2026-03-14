@@ -14,14 +14,25 @@ Si rien n'est staged, regarder tout le diff :
 git diff HEAD
 ```
 
-Format du commit message (Conventional Commits) :
+Format du commit message (Gitmoji + Conventional Commits) :
 ```
-<type>(<scope>): <description courte en français>
+<emoji> <type>(<scope>): <description courte en français>
 
 [Corps optionnel : explication du POURQUOI si non évident]
 ```
 
-Types : `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `perf`, `style`
+Gitmoji à utiliser :
+- ✨ `feat` — nouvelle fonctionnalité
+- 🐛 `fix` — correction de bug
+- ♻️ `refactor` — refactoring sans changement de comportement
+- 🧪 `test` — ajout ou correction de tests
+- 📝 `docs` — documentation uniquement
+- 🔧 `chore` — config, tooling, dépendances
+- ⚡️ `perf` — amélioration de performance
+- 💄 `style` — formatage, style (sans logique)
+- 🗑️ `chore` — suppression de code/fichiers
+- 🔒 `fix` — correctif de sécurité
+- 🚀 `chore` — déploiement
 
 Règles :
 - Description < 72 caractères

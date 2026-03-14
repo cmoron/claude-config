@@ -5,7 +5,7 @@
 - Comprendre avant de coder : explorer 2-3 fichiers similaires d'abord
 - Tests avant ou avec le code — jamais après
 - Git linéaire uniquement : rebase, pas de merge commits
-- Conventional commits — message = POURQUOI, pas le quoi
+- Gitmoji + Conventional Commits — `✨ feat(scope): description` — message = POURQUOI, pas le quoi
 
 ## Code quality
 - Formatage automatique via hooks (ruff/rustfmt/prettier) — ne pas relancer manuellement
