@@ -18,6 +18,7 @@
     "defaultMode": "bypassPermissions"
   },
   "skipDangerousModePermissionPrompt": true,
+  "includeCoAuthoredBy": false,
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
     "mgrep@Mixedbread-Grep": true,
