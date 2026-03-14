@@ -1,0 +1,4 @@
+[submodule "upstream/anthropic-skills"]
+	path = upstream/anthropic-skills
+	url = https://github.com/anthropics/skills.git
+	branch = main

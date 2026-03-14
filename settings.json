@@ -1,0 +1,71 @@
+{
+  "permissions": {
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf --no-preserve-root /)",
+      "Bash(sudo *)",
+      "Bash(git push --force *)",
+      "Bash(curl * | sh)",
+      "Bash(wget * | sh)",
+      "Bash(prisma reset *)"
+    ],
+    "defaultMode": "bypassPermissions"
+  },
+  "skipDangerousModePermissionPrompt": true,
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true,
+    "mgrep@Mixedbread-Grep": true
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "npx -y ccstatusline@latest",
+    "padding": 0
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude-config/scripts/format-on-save.sh",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude-config/scripts/protect-env.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude-config/scripts/bell.sh",
+            "timeout": 3
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude-config/scripts/bell.sh",
+            "timeout": 3
+          }
+        ]
+      }
+    ]
+  }
+}
