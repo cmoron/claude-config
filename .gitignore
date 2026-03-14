@@ -1,0 +1,13 @@
+# Secrets et environnement
+.env
+.env.*
+*.pem
+*.key
+
+# Logs runtime
+logs/
+
+# Cache outils
+node_modules/
+.cache/
+__pycache__/
