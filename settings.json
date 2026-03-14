@@ -25,8 +25,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "npx -y ccstatusline@latest",
-    "padding": 0
+    "command": "bash $HOME/src/claude-config/scripts/statusline.sh"
   },
   "hooks": {
     "PostToolUse": [
