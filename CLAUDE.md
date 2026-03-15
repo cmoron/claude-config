@@ -12,23 +12,15 @@
 - Gestion d'erreurs explicite — pas de catch silencieux, pas de unwrap hors tests
 - Un module = une responsabilité
 
-## Stack par projet
-- **mypacer / running** : Python 3.12 (FastAPI, uv, ruff, mypy), Next.js 15 App Router, PostgreSQL
-- **AoC / systèmes** : Rust édition 2021, clippy strict
-- **configs perso** : Neovim Lua, dotfiles, shell POSIX
-- **tooling** : pnpm, ruff, mypy, prettier, rustfmt, uv
+## Workflow
+- Entrer en plan mode pour toute tâche 3+ étapes ou décision architecturale
+- Sur un bug : diagnostiquer et corriger sans demander confirmation — pointer les logs, corriger
+- Ne jamais déclarer une tâche terminée sans avoir prouvé qu'elle fonctionne
+- Pause sur les changements non-triviaux : "existe-t-il une solution plus élégante ?"
 
-## Commandes de référence
-```bash
-# Python (uv)
-uv run ruff check . && uv run ruff format --check . && uv run mypy . && uv run pytest
-
-# Rust
-cargo clippy --all-targets -- -D warnings && cargo test && cargo fmt
-
-# Next.js
-pnpm build && pnpm test
-```
+## Auto-amélioration
+- Après toute correction : mettre à jour `tasks/lessons.md` avec la règle (date | contexte | règle)
+- Relire `tasks/lessons.md` en début de session si présent
 
 ## Agents disponibles
 Agents actifs dans `~/.claude/agents/` :
