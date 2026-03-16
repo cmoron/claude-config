@@ -1,10 +1,10 @@
 ## Stack Next.js
-- Next.js 15 App Router, TypeScript, pnpm, prettier
+- Next.js 15 App Router, TypeScript, bun, prettier
 
 ## Commandes
 ```bash
-pnpm build && pnpm test
-pnpm lint && pnpm type-check
+bun run build && bun test
+bun run lint && bun run type-check
 ```
 
 ## Conventions

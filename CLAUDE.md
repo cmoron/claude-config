@@ -12,6 +12,10 @@
 - Gestion d'erreurs explicite — pas de catch silencieux, pas de unwrap hors tests
 - Un module = une responsabilité
 
+## Toolchains
+- Python : `uv` (gestion deps/envs), `ruff` (lint + format), `mypy` (types), `pytest`
+- JavaScript/TypeScript : `bun` uniquement (runtime, package manager, bundler, test runner) — pas de npm/pnpm/yarn/node
+
 ## Workflow
 - Entrer en plan mode pour toute tâche 3+ étapes ou décision architecturale
 - Sur un bug : diagnostiquer et corriger sans demander confirmation — pointer les logs, corriger
