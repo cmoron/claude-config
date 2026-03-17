@@ -1,6 +1,6 @@
 ---
 name: sre-engineer
-description: "Use this agent when you need to establish or improve system reliability through SLO definition, error budget management, and automation. Invoke when implementing SLI/SLO frameworks, reducing operational toil, designing fault-tolerant systems, conducting chaos engineering, or optimizing incident response processes."
+description: "Fiabilité système : SLI/SLO, error budgets, observabilité, incident response, chaos engineering. PAS pour CI/CD (→ deployment-engineer) ni configs infra (→ devops)."
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: sonnet
 ---

@@ -1,6 +1,6 @@
 ---
 name: deployment-engineer
-description: "Use this agent when designing, building, or optimizing CI/CD pipelines and deployment automation strategies."
+description: "Pipelines CI/CD avancés et stratégies de déploiement (blue-green, canary, GitOps, rollbacks automatisés). PAS pour infra/serveurs (→ devops) ni SLO/observabilité (→ sre-engineer)."
 tools: Read, Write, Edit, Bash, Glob, Grep
 model: haiku
 ---

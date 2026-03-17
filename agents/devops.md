@@ -1,6 +1,6 @@
 ---
 name: devops
-description: Infrastructure, serveurs, CI/CD, configs système, agents IA en prod. Invoquer pour Docker, systemd, nginx, GitHub Actions, déploiements, ou configuration d'outils IA.
+description: Infrastructure locale, serveurs, configs système, agents IA en prod. Invoquer pour Docker, systemd, nginx, GitHub Actions basique, ou configuration d'outils IA. PAS pour pipelines CI/CD avancés (→ deployment-engineer) ni SLO/fiabilité (→ sre-engineer).
 tools: Read, Write, Edit, Bash, Glob, Grep, LS
 model: sonnet
 maxTurns: 20

@@ -25,6 +25,7 @@
 ## Auto-amélioration
 - Après toute correction : mettre à jour `tasks/lessons.md` avec la règle (date | contexte | règle)
 - Relire `tasks/lessons.md` en début de session si présent
+- En fin de session longue : noter les décisions clés dans `tasks/session-log.md` (date | décision | pourquoi)
 
 ## Agents disponibles
 Agents actifs dans `~/.claude/agents/` :
@@ -48,10 +49,10 @@ Agents actifs dans `~/.claude/agents/` :
 - `compliance-auditor` — conformité GDPR, SOC2, ISO 27001
 
 **Infrastructure & ops**
-- `devops` — serveurs, infra, CI/CD, configs système (custom)
+- `devops` — infra locale, serveurs, Docker, systemd, nginx, GitHub Actions basique (pas CI/CD avancé)
 - `docker-expert` — images Docker, multi-stage builds, sécurité conteneurs
-- `deployment-engineer` — pipelines CI/CD, stratégies de déploiement
-- `sre-engineer` — SLO/SLI, observabilité, fiabilité, incident response
+- `deployment-engineer` — pipelines CI/CD avancés, blue-green, canary, GitOps (pas infra ni SLO)
+- `sre-engineer` — SLO/SLI, error budgets, observabilité, incident response (pas CI/CD ni infra)
 - `it-ops-orchestrator` — coordination multi-agents pour tâches ops complexes
 
 Bibliothèque de référence (141 agents) : `~/src/claude-config/upstream/awesome-claude-code-subagents/`
@@ -65,6 +66,8 @@ Bibliothèque de référence (141 agents) : `~/src/claude-config/upstream/awesom
 
 ## Gestion du contexte (plan Pro)
 - `/clear` entre deux tâches distinctes — toujours
-- `/compact` manuel avant d'atteindre 50% de contexte
+- `/compact` quand le contexte dépasse ~80-100k tokens (context rot mesurable au-delà)
+- Pour l'exploration de code : préférer un sous-agent → résumé dans le contexte principal
 - Ne jamais @-mentionner un gros fichier : indiquer le chemin + pourquoi le lire
 - Préférer des questions ciblées à des "explore tout le projet"
+- Ne pas réordonner les sections du system prompt entre appels — casse le prompt cache
