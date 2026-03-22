@@ -11,3 +11,4 @@ logs/
 node_modules/
 .cache/
 __pycache__/
+.playwright-mcp/
