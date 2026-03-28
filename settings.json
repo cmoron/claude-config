@@ -18,6 +18,7 @@
     ],
     "defaultMode": "bypassPermissions"
   },
+  "model": "opus",
   "hooks": {
     "PostToolUse": [
       {
@@ -92,7 +93,16 @@
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
     "mgrep@Mixedbread-Grep": true,
-    "claude-mem@thedotmack": true
+    "claude-mem@thedotmack": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true,
+    "jdtls-lsp@claude-plugins-official": true
   },
-  "skipDangerousModePermissionPrompt": true
+  "skipDangerousModePermissionPrompt": true,
+  "mcpServers": {
+    "linear": {
+      "type": "http",
+      "url": "https://mcp.linear.app/sse"
+    }
+  }
 }

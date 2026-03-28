@@ -1,19 +1,20 @@
 ---
 name: openclaw
-description: Pour travailler sur Nestor/openclaw : VPS mymelon.tech, configuration du service, workspace de l'agent, services actifs, déploiement et migration NAS.
+description: Pour travailler sur Nestor/openclaw : VM NAS locale (openclaw-vm), configuration du service, workspace de l'agent, services actifs, déploiement via Ansible.
 ---
 
 # Openclaw — Nestor
 
-Nestor est un assistant IA personnel tournant sur un VPS Hostinger, accessible via Telegram.
+Nestor est un assistant IA personnel tournant sur une VM KVM locale (NAS), accessible via Telegram.
 Ce skill fournit le contexte nécessaire pour le maintenir et le faire évoluer.
 
 ## Accès
 
-- **VPS** : `cyril@mymelon.tech` (clefs SSH configurées, connexion directe)
-- **Repo local** : `~/src/openclaw/` (synchronisé avec le VPS)
-- **Config sur VPS** : `~/.openclaw/`
+- **VM** : `cyril@192.168.122.100` via ProxyJump `nas` — ou `ssh -J nas cyril@192.168.122.100`
+- **Ansible** : `~/src/openclaw/ansible/` (inventaire + playbooks de déploiement)
+- **Config sur VM** : `~/.openclaw/`
 - **Service** : `systemctl --user status openclaw-gateway`
+- **VNC** : `vnc-openclaw.home.moron.at` (pour Chrome manuel si besoin)
 
 ## Architecture du service
 
@@ -57,26 +58,19 @@ Ce skill fournit le contexte nécessaire pour le maintenir et le faire évoluer.
 | Google Keep | Browser headless | ⚠️ Partiel | Chrome doit être lancé manuellement |
 | Carrefour Drive | Browser CDP port 19222 | ⚠️ Partiel | Chrome non-headless + Xvfb DISPLAY:1 requis |
 
-## Contrainte Chrome sur VPS
+## Chrome sur la VM NAS
 
-Chrome est **éteint par défaut** (VPS Hostinger 1 vCPU partagé, 0 swap — Chrome sature le CPU).
-Si Nestor a besoin du browser (Keep, Carrefour) : il échoue immédiatement et notifie Cyril.
-Cyril lance Chrome manuellement depuis VNC si nécessaire.
-
-## Objectif migration NAS
-
-Faire tourner Chrome en service systemd permanent sur une VM KVM (NAS Cyril, Ryzen 5 5600GT, 14 GB RAM) :
-- Xvfb + Chrome démarrent au boot, redémarrés par systemd si crash
-- Sessions Carrefour / Google Keep persistées dans le profil Chrome
-- Une seule intervention manuelle : login initial via VNC après migration
-- Résultat : autonomie totale sur tous les services
+Chrome tourne en service systemd permanent sur la VM (Ryzen 5 5600GT, 14 GB RAM, 3 vCPUs) :
+- Xvfb + Chrome démarrent au boot, redémarrés automatiquement par systemd si crash
+- Sessions Carrefour / Google Keep persistées dans le profil Chrome (`~/.openclaw/browser/chrome-profile`)
+- Debug port : `9222` — display : `:1`
+- En cas de problème de session : accès VNC via `vnc-openclaw.home.moron.at`
 
 ## Workflow de modification
 
 1. Modifier les fichiers dans `~/src/openclaw/` (local)
-2. Pousser sur GitHub : `git add -p && git commit && git push`
-3. Sur le VPS : `cd ~/src/openclaw && git pull`
-4. Redémarrer si besoin : `systemctl --user restart openclaw-gateway`
-5. Vérifier : `systemctl --user status openclaw-gateway` + tester via Telegram
+2. Déployer via Ansible : `ansible-playbook -i ansible/inventory.yml ansible/playbooks/03-openclaw.yml`
+3. Redémarrer si besoin : `ssh -J nas cyril@192.168.122.100 'systemctl --user restart openclaw-gateway'`
+4. Vérifier : status + tester via Telegram
 
 Pour les fichiers workspace (SOUL.md, AGENTS.md, etc.), les changements sont lus au prochain message sans redémarrage.
