@@ -68,6 +68,15 @@ else
     echo "     cd $CONFIG_DIR && git submodule update --init"
 fi
 
+# Config ccstatusline : symlink du dossier
+mkdir -p "$HOME/.config"
+# Si c'est un vrai dossier (pas déjà un symlink), le remplacer
+if [ -d "$HOME/.config/ccstatusline" ] && [ ! -L "$HOME/.config/ccstatusline" ]; then
+    rm -rf "$HOME/.config/ccstatusline"
+fi
+ln -sfn "$CONFIG_DIR/config/ccstatusline" "$HOME/.config/ccstatusline"
+echo "  ✓ ~/.config/ccstatusline"
+
 echo ""
 echo "✓ Déploiement terminé."
 echo ""

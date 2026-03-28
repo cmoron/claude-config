@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx -y ccstatusline@latest --hook"
+            "command": "bunx -y ccstatusline@latest --hook"
           }
         ]
       }
@@ -79,7 +79,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx -y ccstatusline@latest --hook"
+            "command": "bunx -y ccstatusline@latest --hook"
           }
         ]
       }
@@ -87,7 +87,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "npx -y ccstatusline@latest",
+    "command": "bunx -y ccstatusline@latest",
     "padding": 0
   },
   "enabledPlugins": {
