@@ -2,7 +2,7 @@
 # Hook Stop / Notification : joue le son Warcraft 3 "travail terminé"
 # Compatible WSL2 (via powershell.exe) et macOS (via afplay)
 
-SOUND="$HOME/src/claude-config/warcraft-3-paysan-travail-termine.mp3"
+SOUND="$HOME/src/claude-config/assets/warcraft-3-paysan-travail-termine.mp3"
 
 if [[ "$(uname -s)" == "Darwin" ]]; then
   afplay "$SOUND" &

@@ -30,6 +30,15 @@
         "color": "ansi256:15",
         "backgroundColor": "ansi256:240",
         "rawValue": false
+      },
+      {
+        "id": "86521074-f1fb-4134-ba55-b5d45f366ff1",
+        "type": "git-root-dir",
+        "metadata": {
+          "hideNoGit": "false"
+        },
+        "color": "ansi256:236",
+        "backgroundColor": "ansi256:15"
       }
     ],
     [
