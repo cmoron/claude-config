@@ -57,8 +57,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/src/claude-config/scripts/bell.sh",
-            "timeout": 3
+            "command": "$HOME/src/claude-config/scripts/notify-sound.sh",
+            "timeout": 10
           }
         ]
       }
@@ -68,8 +68,8 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/src/claude-config/scripts/bell.sh",
-            "timeout": 3
+            "command": "$HOME/src/claude-config/scripts/notify-sound.sh",
+            "timeout": 10
           }
         ]
       }
