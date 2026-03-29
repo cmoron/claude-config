@@ -3,22 +3,33 @@
   "lines": [
     [
       {
+        "id": "5e6538b3-2cd0-401b-8aa0-0cf09f3c53f2",
+        "type": "custom-text",
+        "color": "white",
+        "backgroundColor": "ansi256:236",
+        "customText": "👿 ",
+        "merge": "no-padding"
+      },
+      {
         "id": "1",
         "type": "model",
-        "color": "brightYellow",
-        "backgroundColor": "bgBrightBlack"
+        "color": "ansi256:11",
+        "backgroundColor": "ansi256:236",
+        "rawValue": true
       },
       {
         "id": "3",
         "type": "context-length",
-        "color": "ansi256:232",
-        "backgroundColor": "ansi256:251"
+        "color": "ansi256:15",
+        "backgroundColor": "ansi256:238",
+        "rawValue": false
       },
       {
         "id": "5",
         "type": "git-branch",
-        "color": "brightWhite",
-        "backgroundColor": "bgBrightBlack"
+        "color": "ansi256:15",
+        "backgroundColor": "ansi256:240",
+        "rawValue": false
       }
     ],
     [
@@ -26,22 +37,22 @@
         "id": "545de27c-a1b9-4dcc-93d7-604b79e9fc74",
         "type": "tokens-total",
         "color": "ansi256:255",
-        "backgroundColor": "ansi256:240"
+        "backgroundColor": "ansi256:238"
       },
       {
         "id": "195c1642-6109-4392-a33d-76f8df18377a",
         "type": "session-usage",
-        "color": "ansi256:232",
+        "color": "ansi256:15",
+        "backgroundColor": "ansi256:240",
         "metadata": {
           "display": "time"
-        },
-        "backgroundColor": "bgWhite"
+        }
       },
       {
         "id": "059598b0-bf46-4dec-8186-9c563b54470d",
         "type": "reset-timer",
-        "color": "ansi256:255",
-        "backgroundColor": "bgBrightBlack"
+        "color": "ansi256:15",
+        "backgroundColor": "ansi256:242"
       }
     ],
     []
@@ -49,6 +60,7 @@
   "flexMode": "full-minus-40",
   "compactThreshold": 60,
   "colorLevel": 2,
+  "defaultPadding": " ",
   "inheritSeparatorColors": false,
   "globalBold": false,
   "powerline": {
@@ -63,8 +75,7 @@
     "endCaps": [
       ""
     ],
-    "autoAlign": true,
-    "theme": "custom"
-  },
-  "defaultPadding": " "
+    "theme": "custom",
+    "autoAlign": true
+  }
 }
