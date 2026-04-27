@@ -14,6 +14,7 @@
 
 ## Toolchains
 - Python : `uv` (gestion deps/envs), `ruff` (lint + format), `mypy` (types), `pytest`
+  - CLI : `typer` (Click + type hints) + `rich` (output stylisé, tables, progress) par défaut
 - JavaScript/TypeScript : `bun` uniquement (runtime, package manager, bundler, test runner) — pas de npm/pnpm/yarn/node
 
 ## Workflow
@@ -22,52 +23,58 @@
 - Ne jamais déclarer une tâche terminée sans avoir prouvé qu'elle fonctionne
 - Pause sur les changements non-triviaux : "existe-t-il une solution plus élégante ?"
 
-## Auto-amélioration
-- Après toute correction : mettre à jour `tasks/lessons.md` avec la règle (date | contexte | règle)
-- Relire `tasks/lessons.md` en début de session si présent
-- En fin de session longue : noter les décisions clés dans `tasks/session-log.md` (date | décision | pourquoi)
-
-## Agents disponibles
-Agents actifs dans `~/.claude/agents/` :
-
-**Conception & architecture**
-- `software-architect` — choix de stack, ADR, conception macro, trade-offs (Opus)
-- `architect-reviewer` — cohérence archi, patterns, API contracts sur code existant
-
-**Développement**
+## Agents custom
+Agents spécialisés dans `~/.claude/agents/` (besoins non couverts par les plugins) :
+- `software-architect` — choix de stack, ADR, conception macro (Opus)
 - `fullstack-developer` — features complètes DB→API→UI
 - `api-designer` — design REST/GraphQL, OpenAPI, versioning
 - `ui-designer` — design system, composants, accessibilité
 - `python-pro` — FastAPI, Pydantic, async, uv, ruff, mypy, pytest
-- `rust-pro` — idiomes Rust, borrow checker, clippy, AoC
-
-**Qualité & sécurité**
-- `code-reviewer` — revue diff : sécurité → correction → perf → lisibilité
-- `debugger` — root cause + fix minimal + vérification
-- `security-auditor` — OWASP, secrets, vulns, revue sécurité
-- `penetration-tester` — tests d'intrusion, exploitation, rapport
-- `compliance-auditor` — conformité GDPR, SOC2, ISO 27001
-
-**Infrastructure & ops**
-- `devops` — infra locale, serveurs, Docker, systemd, nginx, GitHub Actions basique (pas CI/CD avancé)
-- `docker-expert` — images Docker, multi-stage builds, sécurité conteneurs
-- `deployment-engineer` — pipelines CI/CD avancés, blue-green, canary, GitOps (pas infra ni SLO)
-- `sre-engineer` — SLO/SLI, error budgets, observabilité, incident response (pas CI/CD ni infra)
-- `it-ops-orchestrator` — coordination multi-agents pour tâches ops complexes
+- `rust-pro` — idiomes Rust, borrow checker, clippy
 
 Bibliothèque de référence (141 agents) : `~/src/claude-config/upstream/awesome-claude-code-subagents/`
-→ Si un besoin émerge, copier l'agent pertinent dans `agents/` et l'adapter.
+→ Si un nouveau besoin émerge, copier l'agent pertinent dans `agents/` et l'adapter avant de créer du custom.
 
-## Commandes slash
-- `/bootstrap` — génère un CLAUDE.md pour le projet courant
-- `/implement <feature>` — implémente avec tests (explore → plan → TDD → commit)
-- `/review` — revue du diff courant, priorisé par sévérité
+Pour review / debug / audit / deploy / optimize / document : skills du plugin **`superpowers`**.
+
+## Commandes slash custom
 - `/commit` — génère un commit message sémantique (Conventional Commits)
 
-## Gestion du contexte (plan Pro)
+Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate…) est couvert par le plugin **`superpowers`**.
+La maintenance auto du `CLAUDE.md` projet est couverte par **`claude-md-management`**.
+
+## Outils de recherche (économie de tokens)
+Ordre de préférence strict — ne JAMAIS utiliser le built-in Grep/Glob/WebSearch par défaut :
+
+**Recherche de contenu**
+1. `mgrep "query"` — sémantique, premier réflexe pour "trouve le code qui fait X"
+2. `rg "pattern"` — recherche littérale/regex, gitignore-aware, SIMD (skip `node_modules`, binaires)
+3. Built-in Grep tool — fallback uniquement si mgrep/rg indisponibles
+
+**Recherche de fichiers**
+- `fd "nom"` — remplace `find`, gitignore-aware, parallèle
+- Built-in Glob — fallback
+
+**Recherche par structure syntaxique (AST)**
+- `ast-grep --pattern '...'` (alias `sg`) — pour patterns multi-lignes ou structurels impossibles en regex (ex: "async sans try/catch").
+
+**Exploration de code avant lecture complète**
+- Skill `claude-mem:smart-explore` — tree-sitter AST, retourne structure au lieu du fichier entier. À utiliser AVANT `Read` sur un fichier inconnu >200 lignes.
+
+**Extraction structurée**
+- `jq '.field'` pour JSON, `yq` pour YAML — extraire précisément, ne jamais `cat` un gros fichier structuré dans le contexte.
+
+**Recherche web**
+- `mgrep --web --answer "query"` — jamais le built-in WebSearch (trop verbeux, SERPs non résumées).
+
+**Documentation de bibliothèques**
+- Plugin `context7` — fetch doc à jour (React, FastAPI, etc.) avant de supposer une API.
+
+## Gestion du contexte (plan Max, fenêtre 1M tokens)
 - `/clear` entre deux tâches distinctes — toujours
-- `/compact` quand le contexte dépasse ~80-100k tokens (context rot mesurable au-delà)
-- Pour l'exploration de code : préférer un sous-agent → résumé dans le contexte principal
+- `/compact` à ~60% du contexte ou dès que le modèle oublie des instructions, en précisant quoi préserver : `/compact Keep: <décisions clés, fichiers en cours, contraintes>`
+- Pour explorer du code : préférer un sous-agent (Explore) → résumé dans le contexte principal
 - Ne jamais @-mentionner un gros fichier : indiquer le chemin + pourquoi le lire
-- Préférer des questions ciblées à des "explore tout le projet"
-- Ne pas réordonner les sections du system prompt entre appels — casse le prompt cache
+- Mémoire cross-session : assurée par `claude-mem` (auto, MEMORY.md)
+
+@RTK.md

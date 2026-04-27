@@ -9,14 +9,12 @@ Configuration personnelle de Claude Code — agents, commandes, skills, hooks et
 claude   # Claude Code CLI
 git
 jq       # utilisé par le statusline (apt install jq / brew install jq)
-node     # pour ccstatusline et mgrep (npx)
-rg       # ripgrep — utilisé par le Grep intégré de Claude (apt install ripgrep / brew install ripgrep)
-mgrep    # recherche sémantique + web synthétisé : npm install -g mgrep
+bun      # runtime + package manager (https://bun.sh)
+rg       # ripgrep (apt install ripgrep / brew install ripgrep)
 
 # Par stack
 uv       # Python (remplace pip/venv/poetry)
 cargo    # Rust
-pnpm     # Node/TypeScript
 ```
 
 ## Installation
@@ -41,35 +39,34 @@ git submodule update --init
 
 ## Ce qui est déployé
 
-### Agents (`~/.claude/agents/`)
+### Agents custom (`~/.claude/agents/`)
 
-Sélectionnés et invoqués automatiquement par Claude selon le contexte.
+Sélectionnés automatiquement par Claude selon le contexte. La liste est volontairement courte : tout ce qui peut être couvert par un plugin l'est.
 
 | Domaine | Agents |
 |---------|--------|
-| Architecture | `software-architect`, `architect-reviewer` |
+| Architecture | `software-architect` |
 | Développement | `fullstack-developer`, `api-designer`, `ui-designer`, `python-pro`, `rust-pro` |
-| Qualité | `code-reviewer`, `debugger`, `security-auditor`, `penetration-tester`, `compliance-auditor` |
-| Infra & ops | `devops`, `docker-expert`, `deployment-engineer`, `sre-engineer`, `it-ops-orchestrator` |
 
-Bibliothèque de référence : `upstream/awesome-claude-code-subagents/` (141 agents disponibles).
+Bibliothèque de référence : `upstream/awesome-claude-code-subagents/` (141 agents disponibles à recopier au besoin).
 
-### Commandes slash (`~/.claude/commands/`)
+### Commandes slash custom (`~/.claude/commands/`)
 
 | Commande | Description |
 |----------|-------------|
-| `/bootstrap` | Génère un `CLAUDE.md` pour le projet courant |
-| `/implement <feature>` | Implémente avec tests (explore → plan → TDD → commit) |
-| `/review` | Revue du diff courant, priorisée par sévérité |
 | `/commit` | Génère un commit message Conventional Commits |
 
-### Skills (`~/.claude/skills/`)
+Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate…) est fourni par le plugin `superpowers`.
 
-- `python-dev` — stack Python : FastAPI, uv, ruff, mypy, pytest
-- `rust-dev` — stack Rust 2021 : clippy strict, error handling idiomatique
-- `running-app` — domaine métier running/athlétisme (mypacer, bases_athle)
+### Skills custom (`~/.claude/skills/`)
 
-Les skills Anthropic officiels sont déployés depuis `upstream/anthropic-skills/`.
+- `claude-config` — modifier cette config
+- `nvim-config` — modifier la config Neovim (`~/src/nvim-config`)
+- `linear` — gérer les projets Linear DecaSaaS
+- `notion` — base documentaire DecaSaaS
+- `openclaw` — VM NAS locale Nestor/openclaw
+- `mvp` — création MVP/POC rapide avec stacks préférées
+- `grill-me` — interview contradictoire sur un plan/design
 
 ### Hooks et scripts
 
@@ -77,17 +74,34 @@ Les skills Anthropic officiels sont déployés depuis `upstream/anthropic-skills
 |------|--------|-------------|
 | Format on save | `scripts/format-on-save.sh` | Après Write/Edit |
 | Protection `.env` | `scripts/protect-env.sh` | Avant Write/Edit |
-| Bell notification | `scripts/bell.sh` | Stop / Notification |
-| Statusline | `scripts/statusline.sh` | ccstatusline |
+| Notification sonore | `scripts/notify-sound.sh` | Stop / Notification |
+| Statusline | `bunx ccstatusline` | UserPromptSubmit / Skill |
+| RTK token saver | `rtk hook claude` | Avant Bash |
 
 ### Plugins (à installer manuellement)
 
-Les plugins ne peuvent pas être installés par script — ils passent par le registre Claude Code :
+Les plugins ne peuvent pas être installés par script — ils passent par le registre Claude Code (`/plugin install`) :
 
+**Officiels (`claude-plugins-official`)**
 ```
-mgrep@Mixedbread-Grep       # recherche sémantique et web
-claude-mem@thedotmack        # mémoire persistante cross-session
-typescript-lsp@claude-plugins-official  # LSP TypeScript
+typescript-lsp           # LSP TypeScript
+pyright-lsp              # LSP Python
+rust-analyzer-lsp        # LSP Rust
+jdtls-lsp                # LSP Java
+superpowers              # 14 skills méthodologie (Plan/TDD/Debug/Review/Audit/Deploy…)
+security-guidance        # scan passif vulnérabilités
+context7                 # doc à jour des libs
+github                   # workflow PR/issue
+playwright               # tests browser
+claude-md-management     # maintenance auto du CLAUDE.md projet
+frontend-design          # design system / UI
+skill-creator            # méta-skill pour créer/améliorer des skills
+```
+
+**Tiers**
+```
+mgrep@Mixedbread-Grep    # recherche sémantique + web
+claude-mem@thedotmack    # mémoire persistante cross-session
 ```
 
 ## ⚠️ Note sur les permissions
@@ -98,9 +112,9 @@ typescript-lsp@claude-plugins-official  # LSP TypeScript
 
 ```
 .
-├── agents/          # 19 agents spécialisés
-├── commands/        # 4 commandes slash
-├── skills/          # 3 skills custom (+ anthropic via submodule)
+├── agents/          # agents spécialisés non couverts par les plugins
+├── commands/        # commandes slash custom
+├── skills/          # skills custom
 ├── scripts/         # hooks shell
 ├── upstream/
 │   ├── anthropic-skills/              # submodule : skills officiels
