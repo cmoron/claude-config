@@ -78,6 +78,17 @@ ln -sfn "$CONFIG_DIR/config/ccstatusline" "$HOME/.config/ccstatusline"
 echo "  ✓ ~/.config/ccstatusline"
 
 echo ""
+
+# Plugins : marketplaces + installation depuis enabledPlugins
+if command -v claude >/dev/null 2>&1; then
+    echo "→ Plugins (claude CLI détectée)"
+    "$CONFIG_DIR/scripts/bootstrap-plugins.sh"
+else
+    echo "  ℹ  claude CLI introuvable — lancer plus tard :"
+    echo "     $CONFIG_DIR/scripts/bootstrap-plugins.sh"
+fi
+
+echo ""
 echo "✓ Déploiement terminé."
 echo ""
 echo "Redémarrez Claude Code pour prendre en compte les changements."

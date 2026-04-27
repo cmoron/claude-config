@@ -31,6 +31,17 @@ Si tu as cloné sans `--recurse-submodules` :
 git submodule update --init
 ```
 
+`install.sh` fait deux choses :
+1. **Symlinke** la config (CLAUDE.md, settings.json, agents, commands, skills) dans `~/.claude/` — versionné dans ce repo
+2. **Bootstrap les plugins** via `scripts/bootstrap-plugins.sh` (si `claude` est dans le PATH) — enregistre les marketplaces et installe les 14 plugins listés dans `enabledPlugins` de `settings.json`
+
+Le bootstrap des plugins est idempotent : on peut relancer sans risque, les plugins déjà installés sont détectés.
+
+Si la CLI `claude` n'était pas dispo lors du premier `install.sh`, lancer après installation :
+```bash
+./scripts/bootstrap-plugins.sh
+```
+
 ## Mise à jour
 
 ```bash
@@ -78,31 +89,33 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate�
 | Statusline | `bunx ccstatusline` | UserPromptSubmit / Skill |
 | RTK token saver | `rtk hook claude` | Avant Bash |
 
-### Plugins (à installer manuellement)
+### Plugins (auto-installés par `install.sh`)
 
-Les plugins ne peuvent pas être installés par script — ils passent par le registre Claude Code (`/plugin install`) :
+Les plugins sont déclarés dans `settings.json` (`enabledPlugins`) et installés automatiquement par `scripts/bootstrap-plugins.sh` via la CLI `claude plugin install`.
 
-**Officiels (`claude-plugins-official`)**
-```
-typescript-lsp           # LSP TypeScript
-pyright-lsp              # LSP Python
-rust-analyzer-lsp        # LSP Rust
-jdtls-lsp                # LSP Java
-superpowers              # 14 skills méthodologie (Plan/TDD/Debug/Review/Audit/Deploy…)
-security-guidance        # scan passif vulnérabilités
-context7                 # doc à jour des libs
-github                   # workflow PR/issue
-playwright               # tests browser
-claude-md-management     # maintenance auto du CLAUDE.md projet
-frontend-design          # design system / UI
-skill-creator            # méta-skill pour créer/améliorer des skills
-```
+**Officiels (`claude-plugins-official`)** — 12 plugins
+| Plugin | Rôle |
+|--------|------|
+| `typescript-lsp` | LSP TypeScript |
+| `pyright-lsp` | LSP Python |
+| `rust-analyzer-lsp` | LSP Rust |
+| `jdtls-lsp` | LSP Java |
+| `superpowers` | 14 skills méthodologie (Plan/TDD/Debug/Review/Audit/Deploy…) |
+| `security-guidance` | Scan passif vulnérabilités |
+| `context7` | Doc à jour des libs |
+| `github` | Workflow PR/issue |
+| `playwright` | Tests browser |
+| `claude-md-management` | Maintenance auto du CLAUDE.md projet |
+| `frontend-design` | Design system / UI |
+| `skill-creator` | Méta-skill pour créer/améliorer des skills |
 
-**Tiers**
-```
-mgrep@Mixedbread-Grep    # recherche sémantique + web
-claude-mem@thedotmack    # mémoire persistante cross-session
-```
+**Tiers** — 2 plugins
+| Plugin | Marketplace | Rôle |
+|--------|-------------|------|
+| `mgrep` | `mixedbread-ai/mgrep` | Recherche sémantique + web |
+| `claude-mem` | `thedotmack/claude-mem` | Mémoire persistante cross-session |
+
+Pour ajouter un plugin : éditer `enabledPlugins` dans `settings.json` puis relancer `./scripts/bootstrap-plugins.sh`.
 
 ## ⚠️ Note sur les permissions
 
@@ -115,7 +128,7 @@ claude-mem@thedotmack    # mémoire persistante cross-session
 ├── agents/          # agents spécialisés non couverts par les plugins
 ├── commands/        # commandes slash custom
 ├── skills/          # skills custom
-├── scripts/         # hooks shell
+├── scripts/         # hooks shell + bootstrap-plugins.sh
 ├── upstream/
 │   ├── anthropic-skills/              # submodule : skills officiels
 │   └── awesome-claude-code-subagents/ # submodule : bibliothèque 141 agents
