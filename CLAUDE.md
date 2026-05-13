@@ -37,10 +37,31 @@ Bibliothèque de référence (141 agents) : `~/src/claude-config/upstream/awesom
 
 Pour review / debug / audit / deploy / optimize / document : skills du plugin **`superpowers`**.
 
+## Échelle d'effort — quand utiliser quel process
+
+Calibrer le process au coût réel de la tâche. **Ne jamais sur-dimensionner.** Sur-process = tokens gaspillés et frustration utilisateur.
+
+| Taille tâche | Signaux | Process |
+|---|---|---|
+| **XS** (≤30 min) | bug fix, typo, single fn, config | Direct. Pas de plan, pas de skill superpowers. Diagnostiquer → corriger → tester → commit. |
+| **S** (≤2h) | 1 feature simple sur 1 couche, ≤3 fichiers, scope clair | Plan inline conversationnel (3-5 bullets), exécution directe, tests + commit. Pas de `brainstorming`, pas de `writing-plans`. |
+| **M** (≤1 jour) | 1 feature mid-complexity, plusieurs couches OU plusieurs fichiers, décisions UX/API à arbitrer | `superpowers:brainstorming` (questions cadrage) → plan **court** (< 300 lignes) → exécution inline avec 1 review final. Pas de subagent-driven. |
+| **L** (multi-jours) | feature traversant DB+API+UI, refactor, migration, multi-équipe | Full superpowers : `brainstorming` → `writing-plans` → `subagent-driven-development` → reviews. C'est conçu pour ça. |
+| **XL** (semaines) | refonte architecturale, choix de stack | `software-architect` agent + ADR + décomposition en sous-projets, chacun traité comme L. |
+
+**Règle d'or** : si je m'apprête à proposer `subagent-driven-development` pour <8h de dev estimé, **stop**. Demander confirmation explicite à l'utilisateur en exposant le coût (tokens, temps wallclock) attendu.
+
+**Anti-patterns à éviter** :
+- Plan de 1500+ lignes pour une feature qui tient en 1 PR — surplomb démesuré
+- 1 spec + 1 plan + 6 subagents implémenteurs + 6 reviewers pour du CRUD basique
+- Dispatcher un subagent pour une édition de 3 lignes — pollution context > économie
+
+**Quand un signal de stack vient d'une feature lourde** : distinguer coût intrinsèque (audit, multi-vues, TDD) du coût de duplication / friction stack. Le second est le vrai signal, le premier est incompressible. Avant de proposer un refactor de stack, vérifier qu'une abstraction interne ne résoudrait pas 70 % de la friction.
+
 ## Commandes slash custom
 - `/commit` — génère un commit message sémantique (Conventional Commits)
 
-Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate…) est couvert par le plugin **`superpowers`**.
+Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate…) est couvert par le plugin **`superpowers`** — calibrer le niveau de process selon l'échelle ci-dessus.
 La maintenance auto du `CLAUDE.md` projet est couverte par **`claude-md-management`**.
 
 ## Outils de recherche (économie de tokens)
