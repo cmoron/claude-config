@@ -7,6 +7,21 @@ set -euo pipefail
 CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CLAUDE_DIR="$HOME/.claude"
 
+# Réconciliation : supprime d'un dossier les symlinks morts ou pointant dans ce
+# repo. Garantit qu'une ressource retirée du repo ne laisse pas d'orphelin dans
+# ~/.claude (déploiement déclaratif — on repart de l'état du repo).
+prune_managed_links() {
+    local dir="$1"
+    [ -d "$dir" ] || return 0
+    for link in "$dir"/*; do
+        [ -L "$link" ] || continue
+        if [ ! -e "$link" ] || [[ "$(readlink "$link")" == "$CONFIG_DIR"* ]]; then
+            rm -f "$link"
+            echo "  ✗ purgé : ${link#$CLAUDE_DIR/}"
+        fi
+    done
+}
+
 echo "→ Config source  : $CONFIG_DIR"
 echo "→ Cible          : $CLAUDE_DIR"
 echo ""
@@ -26,6 +41,11 @@ for f in CLAUDE.md settings.json; do
         echo "  ✓ ~/.claude/$f"
     fi
 done
+
+# Réconciliation : purge les symlinks gérés avant de recréer l'état courant
+prune_managed_links "$CLAUDE_DIR/agents"
+prune_managed_links "$CLAUDE_DIR/commands"
+prune_managed_links "$CLAUDE_DIR/skills"
 
 # Agents : un symlink par fichier .md
 for f in "$CONFIG_DIR/agents/"*.md; do
