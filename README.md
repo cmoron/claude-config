@@ -70,7 +70,7 @@ Bibliothèque de référence : `upstream/awesome-claude-code-subagents/` (141 ag
 |----------|-------------|
 | `/commit` | Génère un commit message Conventional Commits |
 
-Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate…) est fourni par le plugin `superpowers`.
+Le reste (Plan, Architect, TDD, Debug, Review, Audit, Document, Migrate…) est fourni par le plugin `superpowers` ; le déploiement par le skill custom `deployment`.
 
 ### Skills custom (`~/.claude/skills/`)
 
@@ -88,6 +88,9 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate�
 
 Les skills Anthropic upstream déployés sont curés via une allowlist dans
 `install.sh` (`ANTHROPIC_ALLOWLIST`) — on ne symlinke que les skills utiles.
+
+`graphify` est aussi déployé comme skill, mais s'installe en outil autonome via
+`scripts/bootstrap-tools.sh` (cf. Installation) — il n'est pas symlinké depuis ce repo.
 
 ### Hooks et scripts
 
@@ -110,7 +113,7 @@ Les plugins sont déclarés dans `settings.json` (`enabledPlugins`) et installé
 | `pyright-lsp` | LSP Python |
 | `rust-analyzer-lsp` | LSP Rust |
 | `jdtls-lsp` | LSP Java |
-| `superpowers` | 14 skills méthodologie (Plan/TDD/Debug/Review/Audit/Deploy…) |
+| `superpowers` | 14 skills méthodologie (Plan/TDD/Debug/Review/Audit/Document…) |
 | `security-guidance` | Scan passif vulnérabilités |
 | `context7` | Doc à jour des libs |
 | `playwright` | Tests browser |
@@ -137,7 +140,7 @@ Pour ajouter un plugin : éditer `enabledPlugins` dans `settings.json` puis rela
 ├── agents/          # agents spécialisés non couverts par les plugins
 ├── commands/        # commandes slash custom
 ├── skills/          # skills custom
-├── scripts/         # hooks shell + bootstrap-plugins.sh
+├── scripts/         # hooks shell + bootstrap-plugins.sh + bootstrap-tools.sh
 ├── upstream/
 │   ├── anthropic-skills/              # submodule : skills officiels
 │   └── awesome-claude-code-subagents/ # submodule : bibliothèque 141 agents
