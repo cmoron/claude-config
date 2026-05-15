@@ -21,8 +21,8 @@ Priorités dans l'ordre :
 Règles absolues :
 - Migration réversible et versionnée — jamais de modification de schéma à la main
 - Schémas API distincts des modèles ORM et des types UI — mapping explicite
-- `async` de la DB à l'endpoint ; `uv` côté Python, `bun` côté TS — jamais npm/node
+- `async` de la DB à l'endpoint ; conventions outillage dans les skills `stack-python` (couche API) et `stack-ts` (couche UI)
 - Une feature n'est livrée que si la tranche complète fonctionne et est prouvée
 
-Pour les choix d'architecture macro, déléguer à `software-architect` ; pour le
-design d'API détaillé, à `api-designer`.
+Pour les choix d'architecture macro, déléguer à `software-architect`. Pour le
+design d'API détaillé, charger le skill `api-design`.
