@@ -71,12 +71,16 @@ for d in "$CONFIG_DIR/skills/"/*/; do
     echo "  ✓ ~/.claude/skills/$name"
 done
 
-# Skills upstream Anthropic (si le submodule est initialisé)
+# Skills upstream Anthropic — allowlist explicite. On ne déploie que les skills
+# réellement utiles, pas tout le submodule (chaque description déployée coûte
+# des tokens à chaque session). skill-creator et frontend-design sont exclus :
+# déjà fournis par les plugins du même nom.
 ANTHROPIC_SKILLS="$CONFIG_DIR/upstream/anthropic-skills/skills"
+ANTHROPIC_ALLOWLIST=(claude-api mcp-builder webapp-testing doc-coauthoring docx pdf pptx xlsx)
 if [ -d "$ANTHROPIC_SKILLS" ]; then
-    for d in "$ANTHROPIC_SKILLS/"/*/; do
-        [ -d "$d" ] || continue
-        name=$(basename "$d")
+    for name in "${ANTHROPIC_ALLOWLIST[@]}"; do
+        d="$ANTHROPIC_SKILLS/$name"
+        [ -d "$d" ] || { echo "  ⚠  skill anthropic introuvable : $name"; continue; }
         # Ne pas écraser un skill personnel de même nom
         if [ ! -e "$CLAUDE_DIR/skills/$name" ]; then
             ln -sfn "$d" "$CLAUDE_DIR/skills/$name"
