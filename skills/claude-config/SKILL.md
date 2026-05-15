@@ -20,7 +20,7 @@ Ce repo centralise toute la configuration Claude Code personnelle. Il est symlin
 ├── scripts/               # Scripts utilitaires (bell.sh, etc.)
 ├── install.sh             # Déploie via symlinks — idempotent, relancer sans risque
 ├── update.sh              # Pull + re-installe
-└── upstream/              # Bibliothèque de référence (agents tiers, etc.)
+└── upstream/              # Submodule : skills officiels Anthropic (anthropic-skills)
 ```
 
 ## MCPs actifs

@@ -33,8 +33,9 @@ Agents (métiers) spécialisés dans `~/.claude/agents/` :
 - `software-architect` — choix de stack, ADR, conception macro (Opus)
 - `fullstack-developer` — features complètes DB→API→UI
 
-Bibliothèque de référence (141 agents) : `~/src/claude-config/upstream/awesome-claude-code-subagents/`
-→ Si un nouveau besoin émerge, copier l'agent pertinent dans `agents/` et l'adapter avant de créer du custom.
+→ Si un nouveau besoin émerge, s'inspirer de la bibliothèque VoltAgent
+([awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents)),
+copier l'agent pertinent dans `agents/` et l'adapter avant de créer du custom.
 
 Pour review / debug / audit / optimize / document : skills du plugin **`superpowers`**.
 Pour le déploiement : skill custom **`deployment`** (CI/CD GitHub Actions, Docker).

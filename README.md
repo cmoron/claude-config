@@ -62,7 +62,7 @@ Sélectionnés automatiquement par Claude selon le contexte. La liste est volont
 
 Le design UI est couvert par le plugin `frontend-design`.
 
-Bibliothèque de référence : `upstream/awesome-claude-code-subagents/` (141 agents disponibles à recopier au besoin).
+Besoin d'un agent supplémentaire : s'inspirer de [awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) et recopier l'agent adapté dans `agents/`.
 
 ### Commandes slash custom (`~/.claude/commands/`)
 
@@ -142,8 +142,7 @@ Pour ajouter un plugin : éditer `enabledPlugins` dans `settings.json` puis rela
 ├── skills/          # skills custom
 ├── scripts/         # hooks shell + bootstrap-plugins.sh + bootstrap-tools.sh
 ├── upstream/
-│   ├── anthropic-skills/              # submodule : skills officiels
-│   └── awesome-claude-code-subagents/ # submodule : bibliothèque 141 agents
+│   └── anthropic-skills/              # submodule : skills officiels Anthropic
 ├── CLAUDE.md        # instructions globales pour tous les projets
 ├── settings.json    # permissions, hooks, plugins
 ├── install.sh       # déploie la config via symlinks dans ~/.claude/
