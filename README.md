@@ -32,8 +32,8 @@ git submodule update --init
 ```
 
 `install.sh` fait deux choses :
-1. **Symlinke** la config (CLAUDE.md, settings.json, agents, commands, skills) dans `~/.claude/` — versionné dans ce repo
-2. **Bootstrap les plugins** via `scripts/bootstrap-plugins.sh` (si `claude` est dans le PATH) — enregistre les marketplaces et installe les 14 plugins listés dans `enabledPlugins` de `settings.json`
+1. **Symlinke** la config (CLAUDE.md, settings.json, agents, commands, skills) dans `~/.claude/` — versionné dans ce repo. Purge au passage les symlinks morts ou orphelins (déploiement déclaratif : on repart de l'état du repo)
+2. **Bootstrap les plugins** via `scripts/bootstrap-plugins.sh` (si `claude` est dans le PATH) — enregistre les marketplaces et installe les plugins listés dans `enabledPlugins` de `settings.json`
 
 Le bootstrap des plugins est idempotent : on peut relancer sans risque, les plugins déjà installés sont détectés.
 
@@ -93,7 +93,7 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate�
 
 Les plugins sont déclarés dans `settings.json` (`enabledPlugins`) et installés automatiquement par `scripts/bootstrap-plugins.sh` via la CLI `claude plugin install`.
 
-**Officiels (`claude-plugins-official`)** — 12 plugins
+**Officiels (`claude-plugins-official`)** — 11 plugins
 | Plugin | Rôle |
 |--------|------|
 | `typescript-lsp` | LSP TypeScript |
@@ -103,7 +103,6 @@ Les plugins sont déclarés dans `settings.json` (`enabledPlugins`) et installé
 | `superpowers` | 14 skills méthodologie (Plan/TDD/Debug/Review/Audit/Deploy…) |
 | `security-guidance` | Scan passif vulnérabilités |
 | `context7` | Doc à jour des libs |
-| `github` | Workflow PR/issue |
 | `playwright` | Tests browser |
 | `claude-md-management` | Maintenance auto du CLAUDE.md projet |
 | `frontend-design` | Design system / UI |
