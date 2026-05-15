@@ -101,3 +101,7 @@ Ordre de préférence strict — ne JAMAIS utiliser le built-in Grep/Glob/WebSea
 - Mémoire cross-session : assurée par `claude-mem` (auto, MEMORY.md)
 
 @RTK.md
+
+# graphify
+- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
+When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` before doing anything else.

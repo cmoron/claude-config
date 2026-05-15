@@ -31,11 +31,12 @@ Si tu as cloné sans `--recurse-submodules` :
 git submodule update --init
 ```
 
-`install.sh` fait deux choses :
+`install.sh` fait trois choses :
 1. **Symlinke** la config (CLAUDE.md, settings.json, agents, commands, skills) dans `~/.claude/` — versionné dans ce repo. Purge au passage les symlinks morts ou orphelins (déploiement déclaratif : on repart de l'état du repo)
 2. **Bootstrap les plugins** via `scripts/bootstrap-plugins.sh` (si `claude` est dans le PATH) — enregistre les marketplaces et installe les plugins listés dans `enabledPlugins` de `settings.json`
+3. **Bootstrap les outils** via `scripts/bootstrap-tools.sh` (si `uv` est dans le PATH) — installe les outils CLI qui s'intègrent à Claude Code en s'auto-enregistrant (ex. `graphify`, qui transforme une codebase en knowledge graph)
 
-Le bootstrap des plugins est idempotent : on peut relancer sans risque, les plugins déjà installés sont détectés.
+Le bootstrap est idempotent : on peut relancer sans risque, les plugins et outils déjà installés sont détectés.
 
 Si la CLI `claude` n'était pas dispo lors du premier `install.sh`, lancer après installation :
 ```bash

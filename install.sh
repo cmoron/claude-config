@@ -113,6 +113,17 @@ else
 fi
 
 echo ""
+
+# Outils CLI intégrés à Claude Code (graphify…), distribués comme packages
+if command -v uv >/dev/null 2>&1; then
+    echo "→ Outils (uv détecté)"
+    "$CONFIG_DIR/scripts/bootstrap-tools.sh"
+else
+    echo "  ℹ  uv introuvable — lancer plus tard :"
+    echo "     $CONFIG_DIR/scripts/bootstrap-tools.sh"
+fi
+
+echo ""
 echo "✓ Déploiement terminé."
 echo ""
 echo "Redémarrez Claude Code pour prendre en compte les changements."
