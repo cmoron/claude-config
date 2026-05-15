@@ -57,7 +57,9 @@ Sélectionnés automatiquement par Claude selon le contexte. La liste est volont
 | Domaine | Agents |
 |---------|--------|
 | Architecture | `software-architect` |
-| Développement | `fullstack-developer`, `api-designer`, `ui-designer`, `python-pro`, `rust-pro` |
+| Développement | `fullstack-developer`, `api-designer`, `python-pro`, `rust-pro` |
+
+Le design UI est couvert par le plugin `frontend-design`.
 
 Bibliothèque de référence : `upstream/awesome-claude-code-subagents/` (141 agents disponibles à recopier au besoin).
 
@@ -74,10 +76,12 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate�
 - `claude-config` — modifier cette config
 - `nvim-config` — modifier la config Neovim (`~/src/nvim-config`)
 - `linear` — gérer les projets Linear DecaSaaS
-- `notion` — base documentaire DecaSaaS
 - `openclaw` — VM NAS locale Nestor/openclaw
 - `mvp` — création MVP/POC rapide avec stacks préférées
 - `grill-me` — interview contradictoire sur un plan/design
+
+Les skills Anthropic upstream déployés sont curés via une allowlist dans
+`install.sh` (`ANTHROPIC_ALLOWLIST`) — on ne symlinke que les skills utiles.
 
 ### Hooks et scripts
 

@@ -159,32 +159,39 @@ Angles morts (manques) :
 
 ## 5. Recommandations priorisées
 
-### P0 — Corrections (XS, < 1 h, sans risque)
-1. **`install.sh` réconcilie l'état** : avant de recréer les symlinks, supprimer
-   tous les symlinks morts de `~/.claude/{agents,commands,skills}`. Idéalement :
-   purger les symlinks pointant vers `claude-config` puis recréer (déploiement
-   déclaratif, « good taste » — un seul mécanisme).
-2. **Purger les 14 symlinks morts** actuels (one-shot immédiat).
-3. **Mettre `README.md` à jour** : plugins réels, suppression de `github`.
+> **Statut au 2026-05-15** : P0 exécuté et commité. Décisions du checkpoint
+> intégrées ci-dessous (✅ tranché).
 
-### P1 — Trim raisonné (S, demi-journée)
-4. **Trancher les 3 agents génériques** : soit les réécrire courts/FR/taillés
-   stack (modèle `python-pro`), soit les supprimer. Recommandation : réécrire
-   `api-designer` et `fullstack-developer` (utiles), supprimer `ui-designer`
+### P0 — Corrections (XS) — ✅ FAIT
+1. `install.sh` réconcilie l'état (`prune_managed_links`) — déploiement déclaratif.
+2. 14 symlinks morts purgés.
+3. `README.md` synchronisé (retrait de `github`).
+
+### P1 — Trim raisonné (S) — Lot A
+4. **Agents génériques** ✅ : réécrire `api-designer` et `fullstack-developer`
+   courts/FR/taillés stack (modèle `python-pro`) ; **supprimer `ui-designer`**
    (couvert par le plugin `frontend-design`).
-5. **Curer les skills Anthropic déployés** : `install.sh` symlinke une
-   *allowlist* explicite, pas le dossier entier. Garder ce qui sert (`claude-api`,
-   `mcp-builder`, `skill-creator`, `webapp-testing`, `docx`/`pdf`/`pptx`/`xlsx`,
-   `doc-coauthoring`). Écarter le reste.
-6. **Pinner `ccstatusline`** : version fixe ou install locale, supprimer `@latest`.
-7. **Remplacer `notion` par `docmost`** : supprimer le skill `notion` obsolète et
-   créer un skill `docmost` (base documentaire DecaSaaS auto-hébergée). À cadrer
-   en design : accès à Docmost (URL, API/MCP éventuel, structure de l'espace).
+5. **Curer les skills Anthropic déployés** ✅ : `install.sh` symlinke une
+   *allowlist* explicite, pas le dossier entier. Garder : `claude-api`,
+   `mcp-builder`, `skill-creator`, `webapp-testing`, `docx`, `pdf`, `pptx`,
+   `xlsx`, `doc-coauthoring`. Écarter le reste (`algorithmic-art`,
+   `canvas-design`, `slack-gif-creator`, `theme-factory`, `brand-guidelines`,
+   `internal-comms`, `web-artifacts-builder`, et `frontend-design` upstream —
+   doublon du plugin du même nom).
+6. **Pinner `ccstatusline`** ✅ : version fixe, supprimer `@latest`.
+7. **Supprimer le skill `notion`** ✅ (obsolète — Notion abandonné au profit de
+   Docmost auto-hébergé). Le skill `docmost` est **différé** : pas d'accès API
+   sans Docmost Pro pour l'instant. À reprendre quand l'accès sera disponible.
 
-### P2 — Calibrage process (M, à décider au checkpoint)
-8. **Maîtriser le bootstrap superpowers** : option custom plugin — cf. §6.
-9. **Évaluer claude-mem** : ~10 KB/session + un MCP. Mesurer le bénéfice réel
-   cross-session vs le coût. Garder si la mémoire sert ; sinon couper.
+### P2 — Calibrage process — Lot B & C
+8. **Plugin bootstrap custom** ✅ GO (Lot B, projet S/M, brainstorm dédié) — cf. §6.
+9. **claude-mem** ✅ gardé pour l'instant (Lot C) : la **mémoire native de Claude
+   Code** (« Auto Memory » : fichiers Markdown catégorisés + « Auto Dream »)
+   couvre désormais l'essentiel du besoin cross-session, gratuitement. claude-mem
+   coûte des appels API par observation + ~10 KB d'injection/session ; son edge
+   résiduel = recherche vectorielle sur l'historique complet. → **Expérimentation**
+   à planifier : désactiver claude-mem 1-2 semaines, vivre sur la mémoire native,
+   comparer. Décision go/no-go ensuite.
 
 ---
 
@@ -203,16 +210,21 @@ cadrage agressif ; l'échelle d'effort de Cyril ne vit que dans la prose du
 - Bundler 1–2 skills « stack » (`stack-python`, `stack-ts`) encodant les
   conventions uv/ruff/bun, réutilisables et versionnés proprement.
 
-C'est un projet de taille **S/M**, pas une refonte. À trancher au checkpoint :
-le gain (discipline de process garantie) vaut-il le coût de maintenance d'un
-plugin de plus ? Alternative légère : renforcer le `CLAUDE.md` et accepter que
-le calibrage reste « best effort ».
+C'est un projet de taille **S/M**, pas une refonte.
+
+**Décision (checkpoint 2026-05-15) : GO.** Construire ce plugin bootstrap minimal.
+Il fera l'objet d'un brainstorm dédié (son propre spec → plan), car le packaging
+« plugin » soulève des questions à trancher : marketplace locale vs hook simple
+dans `settings.json`, structure, contenu exact des skills stack.
 
 ---
 
-## 7. Prochaines étapes (après validation de cet audit)
+## 7. Plan de marche
 
-1. Checkpoint : Cyril valide / amende les priorités ci-dessus.
-2. P0 exécuté immédiatement (correctif, sans design).
-3. P1 + P2 → passage en design détaillé puis plan d'implémentation.
-4. Décision plugin custom : go / no-go argumenté.
+| Lot | Contenu | Taille | Statut |
+|-----|---------|--------|--------|
+| P0 | Correctifs (install.sh, symlinks, README) | XS | ✅ Fait |
+| **A** | P1 rationalisation (agents, allowlist skills, ccstatusline, suppr. `notion`) | S | Plan court → exécution |
+| **B** | Plugin bootstrap custom | S/M | Brainstorm dédié → spec → plan |
+| **C** | Expérimentation claude-mem vs mémoire native | — | À planifier (différé) |
+| (diff.) | Skill `docmost` | — | Différé (pas d'accès API) |
