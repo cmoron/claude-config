@@ -24,12 +24,14 @@
 - Pause sur les changements non-triviaux : "existe-t-il une solution plus élégante ?"
 
 ## Agents custom
-Agents spécialisés dans `~/.claude/agents/` (besoins non couverts par les plugins) :
+**Principe : les skills portent les compétences, les agents définissent les
+métiers.** Une spécialisation de langage ou une technique (Python, Rust, design
+d'API) est une compétence → skill (`stack-python`, `stack-rust`, `stack-ts`,
+`api-design`), pas un agent.
+
+Agents (métiers) spécialisés dans `~/.claude/agents/` :
 - `software-architect` — choix de stack, ADR, conception macro (Opus)
 - `fullstack-developer` — features complètes DB→API→UI
-- `api-designer` — design REST/GraphQL, OpenAPI, versioning
-- `python-pro` — FastAPI, Pydantic, async, uv, ruff, mypy, pytest
-- `rust-pro` — idiomes Rust, borrow checker, clippy
 
 Bibliothèque de référence (141 agents) : `~/src/claude-config/upstream/awesome-claude-code-subagents/`
 → Si un nouveau besoin émerge, copier l'agent pertinent dans `agents/` et l'adapter avant de créer du custom.
