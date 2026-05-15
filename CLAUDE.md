@@ -28,7 +28,6 @@ Agents spécialisés dans `~/.claude/agents/` (besoins non couverts par les plug
 - `software-architect` — choix de stack, ADR, conception macro (Opus)
 - `fullstack-developer` — features complètes DB→API→UI
 - `api-designer` — design REST/GraphQL, OpenAPI, versioning
-- `ui-designer` — design system, composants, accessibilité
 - `python-pro` — FastAPI, Pydantic, async, uv, ruff, mypy, pytest
 - `rust-pro` — idiomes Rust, borrow checker, clippy
 
