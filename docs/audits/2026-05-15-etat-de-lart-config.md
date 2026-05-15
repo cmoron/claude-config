@@ -225,6 +225,6 @@ dans `settings.json`, structure, contenu exact des skills stack.
 |-----|---------|--------|--------|
 | P0 | Correctifs (install.sh, symlinks, README) | XS | ✅ Fait |
 | **A** | P1 rationalisation (agents, allowlist skills, ccstatusline, suppr. `notion`) | S | Plan court → exécution |
-| **B** | Plugin bootstrap custom | S/M | Brainstorm dédié → spec → plan |
+| **B** | Réorg agents/skills — volet plugin bootstrap abandonné après challenge | S | ✅ Fait |
 | **C** | Expérimentation claude-mem vs mémoire native | — | À planifier (différé) |
 | (diff.) | Skill `docmost` | — | Différé (pas d'accès API) |

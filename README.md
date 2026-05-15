@@ -57,7 +57,7 @@ Sélectionnés automatiquement par Claude selon le contexte. La liste est volont
 | Domaine | Agents |
 |---------|--------|
 | Architecture | `software-architect` |
-| Développement | `fullstack-developer`, `api-designer`, `python-pro`, `rust-pro` |
+| Développement | `fullstack-developer` |
 
 Le design UI est couvert par le plugin `frontend-design`.
 
@@ -79,6 +79,10 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate�
 - `openclaw` — VM NAS locale Nestor/openclaw
 - `mvp` — création MVP/POC rapide avec stacks préférées
 - `grill-me` — interview contradictoire sur un plan/design
+- `stack-python` — conventions Python (uv, ruff, mypy, pytest)
+- `stack-ts` — conventions TypeScript (bun)
+- `stack-rust` — conventions Rust (clippy, thiserror/anyhow)
+- `api-design` — conception d'API REST/GraphQL
 
 Les skills Anthropic upstream déployés sont curés via une allowlist dans
 `install.sh` (`ANTHROPIC_ALLOWLIST`) — on ne symlinke que les skills utiles.
