@@ -21,7 +21,6 @@
 - Entrer en plan mode pour toute tâche 3+ étapes ou décision architecturale
 - Sur un bug : diagnostiquer et corriger sans demander confirmation — pointer les logs, corriger
 - Ne jamais déclarer une tâche terminée sans avoir prouvé qu'elle fonctionne
-- Pause sur les changements non-triviaux : "existe-t-il une solution plus élégante ?"
 
 ## Agents custom
 **Principe : les skills portent les compétences, les agents définissent les
@@ -58,8 +57,7 @@ Calibrer le process au coût réel de la tâche. **Ne jamais sur-dimensionner.**
 - Plan de 1500+ lignes pour une feature qui tient en 1 PR — surplomb démesuré
 - 1 spec + 1 plan + 6 subagents implémenteurs + 6 reviewers pour du CRUD basique
 - Dispatcher un subagent pour une édition de 3 lignes — pollution context > économie
-
-**Quand un signal de stack vient d'une feature lourde** : distinguer coût intrinsèque (audit, multi-vues, TDD) du coût de duplication / friction stack. Le second est le vrai signal, le premier est incompressible. Avant de proposer un refactor de stack, vérifier qu'une abstraction interne ne résoudrait pas 70 % de la friction.
+- Proposer un refactor de stack sans vérifier qu'une abstraction interne ne résoudrait pas l'essentiel de la friction
 
 ## Commandes slash custom
 - `/commit` — génère un commit message sémantique (Conventional Commits)
@@ -102,7 +100,3 @@ Ordre de préférence strict — ne JAMAIS utiliser le built-in Grep/Glob/WebSea
 - Mémoire cross-session : assurée par `claude-mem` (auto, MEMORY.md)
 
 @RTK.md
-
-# graphify
-- **graphify** (`~/.claude/skills/graphify/SKILL.md`) - any input to knowledge graph. Trigger: `/graphify`
-When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` before doing anything else.
