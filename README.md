@@ -83,6 +83,7 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate�
 - `stack-ts` — conventions TypeScript (bun)
 - `stack-rust` — conventions Rust (clippy, thiserror/anyhow)
 - `api-design` — conception d'API REST/GraphQL
+- `deployment` — déploiement CI/CD (GitHub Actions, Docker, serveurs Debian/Ubuntu)
 
 Les skills Anthropic upstream déployés sont curés via une allowlist dans
 `install.sh` (`ANTHROPIC_ALLOWLIST`) — on ne symlinke que les skills utiles.

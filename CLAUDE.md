@@ -36,7 +36,8 @@ Agents (métiers) spécialisés dans `~/.claude/agents/` :
 Bibliothèque de référence (141 agents) : `~/src/claude-config/upstream/awesome-claude-code-subagents/`
 → Si un nouveau besoin émerge, copier l'agent pertinent dans `agents/` et l'adapter avant de créer du custom.
 
-Pour review / debug / audit / deploy / optimize / document : skills du plugin **`superpowers`**.
+Pour review / debug / audit / optimize / document : skills du plugin **`superpowers`**.
+Pour le déploiement : skill custom **`deployment`** (CI/CD GitHub Actions, Docker).
 
 ## Échelle d'effort — quand utiliser quel process
 
@@ -62,7 +63,7 @@ Calibrer le process au coût réel de la tâche. **Ne jamais sur-dimensionner.**
 ## Commandes slash custom
 - `/commit` — génère un commit message sémantique (Conventional Commits)
 
-Le reste (Plan, Architect, TDD, Debug, Review, Audit, Deploy, Document, Migrate…) est couvert par le plugin **`superpowers`** — calibrer le niveau de process selon l'échelle ci-dessus.
+Le reste (Plan, Architect, TDD, Debug, Review, Audit, Document, Migrate…) est couvert par le plugin **`superpowers`** — calibrer le niveau de process selon l'échelle ci-dessus.
 La maintenance auto du `CLAUDE.md` projet est couverte par **`claude-md-management`**.
 
 ## Outils de recherche (économie de tokens)
