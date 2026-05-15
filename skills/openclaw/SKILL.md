@@ -8,6 +8,47 @@ description: Pour travailler sur Nestor/openclaw : VM NAS locale (openclaw-vm), 
 Nestor est un assistant IA personnel tournant sur une VM KVM locale (NAS), accessible via Telegram.
 Ce skill fournit le contexte nécessaire pour le maintenir et le faire évoluer.
 
+## Qu'est-ce qu'OpenClaw
+
+[OpenClaw](https://github.com/openclaw/openclaw) (MIT, ex-Clawdbot/Moltbot, créé par
+Peter Steinberger) est une plateforme open-source **auto-hébergée** qui transforme un
+LLM en agent personnel persistant et autonome, accessible via messagerie.
+**Nestor est une instance d'OpenClaw** — l'agent IA personnel de Cyril. Modifier Nestor,
+c'est configurer une instance de ce projet ; les concepts ci-dessous sont ceux d'OpenClaw.
+
+### Architecture (hub-and-spoke)
+
+Un processus **Gateway** unique au centre, en 4 couches :
+
+1. **Channel adapters** — normalisent les entrées des canaux de messagerie (Telegram,
+   WhatsApp, Slack, Discord…). Nestor n'utilise que **Telegram**.
+2. **Gateway / control plane** — serveur WebSocket Node.js : routage des messages,
+   gestion des sessions, mapping canal → workspace → modèle.
+3. **Agent runtime** — assemble le contexte (historique, prompts, skills) et exécute la
+   **boucle agentique** : recevoir le contexte → appeler le LLM → exécuter les tools →
+   observer le résultat → répondre.
+4. **Tools & exécution** — shell, fichiers, navigateur, emails ; optionnellement isolés
+   en sandbox Docker pour limiter le blast radius.
+
+Model-agnostic : on fournit ses propres clés API (Nestor tourne sur Gemini 3 Flash).
+
+### Concepts clés
+
+- **Workspace** — répertoire de fichiers Markdown, source de vérité de l'agent. À chaque
+  tour, le runtime compose le system prompt à partir de `SOUL.md` (personnalité),
+  `AGENTS.md` (manuel opératoire / règles), l'historique de session et les skills pertinents.
+- **Skills** — playbooks `SKILL.md` à frontmatter YAML, **lazy-loaded** : seul le metadata
+  est lu en permanence, le contenu complet n'est chargé que si la tâche matche le skill
+  (même principe d'économie de tokens que les skills Claude Code).
+- **Heartbeat** — tours d'agent **périodiques** déclenchés sans message utilisateur, pour
+  vérifier proactivement des tâches (Nestor : toutes les 4h, 08h-22h30). Checklist dans
+  `HEARTBEAT.md`.
+- **Mémoire** — hybride : fichiers Markdown durables (`MEMORY.md`) + base vectorielle
+  SQLite pour le rappel sémantique des conversations passées.
+- **MCP** — OpenClaw peut se connecter à des services externes via Model Context Protocol.
+
+Le mapping concret de ces concepts sur l'instance Nestor est détaillé ci-dessous.
+
 ## Accès
 
 - **VM** : `cyril@192.168.122.100` via ProxyJump `nas` — ou `ssh -J nas cyril@192.168.122.100`
