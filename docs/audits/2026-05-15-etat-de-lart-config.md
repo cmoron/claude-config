@@ -184,7 +184,9 @@ Angles morts (manques) :
    sans Docmost Pro pour l'instant. À reprendre quand l'accès sera disponible.
 
 ### P2 — Calibrage process — Lot B & C
-8. **Plugin bootstrap custom** ✅ GO (Lot B, projet S/M, brainstorm dédié) — cf. §6.
+8. **Plugin bootstrap custom** — Lot B : volet plugin **abandonné** après
+   challenge ; seule la réorganisation agents/skills a été retenue et livrée.
+   Cf. §6 et le spec `docs/superpowers/specs/2026-05-15-reorg-agents-skills-design.md`.
 9. **claude-mem** ✅ gardé pour l'instant (Lot C) : la **mémoire native de Claude
    Code** (« Auto Memory » : fichiers Markdown catégorisés + « Auto Dream »)
    couvre désormais l'essentiel du besoin cross-session, gratuitement. claude-mem
@@ -212,10 +214,16 @@ cadrage agressif ; l'échelle d'effort de Cyril ne vit que dans la prose du
 
 C'est un projet de taille **S/M**, pas une refonte.
 
-**Décision (checkpoint 2026-05-15) : GO.** Construire ce plugin bootstrap minimal.
-Il fera l'objet d'un brainstorm dédié (son propre spec → plan), car le packaging
-« plugin » soulève des questions à trancher : marketplace locale vs hook simple
-dans `settings.json`, structure, contenu exact des skills stack.
+**Décision initiale (checkpoint 2026-05-15) : GO.**
+
+> ⚠️ **Révisée le 2026-05-15 (Lot B) : NO-GO sur le plugin.** Le brainstorm
+> dédié a établi que le hook n'apporte rien de mécaniquement vérifiable —
+> l'échelle d'effort est déjà dans le `CLAUDE.md`, injecté à chaque session ; le
+> hook ne résout pas le conflit avec `using-superpowers` (c'est la priorité
+> d'instruction qui le tranche) ; et le bootstrap par hook est une pratique
+> d'auteurs de plugins sans accès au `CLAUDE.md`, pas de la config personnelle.
+> Seule la **réorganisation agents/skills** a été retenue et livrée — cf.
+> `docs/superpowers/specs/2026-05-15-reorg-agents-skills-design.md`.
 
 ---
 
