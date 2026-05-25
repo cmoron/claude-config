@@ -31,12 +31,11 @@ Si tu as cloné sans `--recurse-submodules` :
 git submodule update --init
 ```
 
-`install.sh` fait trois choses :
+`install.sh` fait deux choses :
 1. **Symlinke** la config (CLAUDE.md, settings.json, agents, commands, skills) dans `~/.claude/` — versionné dans ce repo. Purge au passage les symlinks morts ou orphelins (déploiement déclaratif : on repart de l'état du repo)
 2. **Bootstrap les plugins** via `scripts/bootstrap-plugins.sh` (si `claude` est dans le PATH) — enregistre les marketplaces et installe les plugins listés dans `enabledPlugins` de `settings.json`
-3. **Bootstrap les outils** via `scripts/bootstrap-tools.sh` (si `uv` est dans le PATH) — installe les outils CLI qui s'intègrent à Claude Code en s'auto-enregistrant (ex. `graphify`, qui transforme une codebase en knowledge graph)
 
-Le bootstrap est idempotent : on peut relancer sans risque, les plugins et outils déjà installés sont détectés.
+Le bootstrap est idempotent : on peut relancer sans risque, les plugins déjà installés sont détectés.
 
 Si la CLI `claude` n'était pas dispo lors du premier `install.sh`, lancer après installation :
 ```bash
@@ -89,9 +88,6 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Document, Migrate…) est 
 Les skills Anthropic upstream déployés sont curés via une allowlist dans
 `install.sh` (`ANTHROPIC_ALLOWLIST`) — on ne symlinke que les skills utiles.
 
-`graphify` est aussi déployé comme skill, mais s'installe en outil autonome via
-`scripts/bootstrap-tools.sh` (cf. Installation) — il n'est pas symlinké depuis ce repo.
-
 ### Hooks et scripts
 
 | Hook | Script | Déclencheur |
@@ -140,7 +136,7 @@ Pour ajouter un plugin : éditer `enabledPlugins` dans `settings.json` puis rela
 ├── agents/          # agents spécialisés non couverts par les plugins
 ├── commands/        # commandes slash custom
 ├── skills/          # skills custom
-├── scripts/         # hooks shell + bootstrap-plugins.sh + bootstrap-tools.sh
+├── scripts/         # hooks shell + bootstrap-plugins.sh
 ├── upstream/
 │   └── anthropic-skills/              # submodule : skills officiels Anthropic
 ├── CLAUDE.md        # instructions globales pour tous les projets

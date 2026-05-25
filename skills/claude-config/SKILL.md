@@ -17,7 +17,7 @@ Ce repo centralise toute la configuration Claude Code personnelle. Il est symlin
 ├── commands/              # Slash commands (/commit, /review, etc.)
 ├── skills/                # Skills auto-chargés (dossier par skill avec SKILL.md)
 ├── snippets/              # Blocs injectés dynamiquement (ex: stack spécifique)
-├── scripts/               # Scripts utilitaires (bell.sh, etc.)
+├── scripts/               # Hooks shell (format-on-save, notify-sound, protect-env) + bootstrap-plugins
 ├── install.sh             # Déploie via symlinks — idempotent, relancer sans risque
 ├── update.sh              # Pull + re-installe
 └── upstream/              # Submodule : skills officiels Anthropic (anthropic-skills)
