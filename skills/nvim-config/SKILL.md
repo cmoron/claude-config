@@ -1,6 +1,6 @@
 ---
 name: nvim-config
-description: Pour modifier la configuration Neovim de Cyril : plugins lazy.nvim, LSP, keybindings, formatters. Repo ~/src/nvim-config symlinkévers ~/.config/nvim.
+description: Pour modifier la configuration Neovim : plugins lazy.nvim, LSP, keybindings, formatters.
 ---
 
 # Neovim Config — ~/src/nvim-config

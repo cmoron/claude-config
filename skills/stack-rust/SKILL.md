@@ -1,6 +1,6 @@
 ---
 name: stack-rust
-description: Conventions Rust de Cyril — édition 2021, borrow checker, clippy pedantic, thiserror/anyhow. Charger à l'édition de .rs, Cargo.toml, ou pour une question Rust.
+description: Conventions Rust — édition 2021, borrow checker, clippy pedantic, thiserror/anyhow. Charger à l'édition de .rs, Cargo.toml, ou pour une question Rust.
 ---
 
 # Stack Rust

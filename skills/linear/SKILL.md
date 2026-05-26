@@ -1,6 +1,6 @@
 ---
 name: linear
-description: Pour gérer les projets Linear de l'usine à SaaS avec Estelle. Cyril Dev/CTO, Estelle PM/PO. Sprints scrum 1 semaine, backlog libre actuellement.
+description: Pour gérer les projets Linear de l'usine à SaaS — issues, sprints, statuts, priorités.
 ---
 
 # Linear — Usine à SaaS (Cyril + Estelle)

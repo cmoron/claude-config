@@ -1,11 +1,11 @@
 ---
 name: claude-config
-description: Pour modifier la configuration Claude Code de Cyril : agents, skills, commands, settings, CLAUDE.md. Repo ~/src/claude-config symlinkévers ~/.claude.
+description: Pour modifier la configuration Claude Code : agents, skills, commands, settings, CLAUDE.md.
 ---
 
 # Claude Code Config — ~/src/claude-config
 
-Ce repo centralise toute la configuration Claude Code personnelle. Il est symlinkévers `~/.claude/` via `install.sh`.
+Ce repo centralise toute la configuration Claude Code personnelle. Il est symlinké vers `~/.claude/` via `install.sh`.
 
 ## Structure
 
@@ -49,7 +49,7 @@ model: sonnet  # ou opus, haiku
 ---
 # Instructions...
 ```
-Puis `bash install.sh` pour symlinkerdans `~/.claude/agents/`.
+Puis `bash install.sh` pour symlinker dans `~/.claude/agents/`.
 
 ## Ajouter un skill
 

@@ -1,6 +1,6 @@
 ---
 name: stack-python
-description: Conventions Python de Cyril — uv, ruff, mypy strict, pytest, typer+rich. Charger à l'édition de .py, pyproject.toml, ou pour une question Python avancée.
+description: Conventions Python — uv, ruff, mypy strict, pytest, typer+rich. Charger à l'édition de .py, pyproject.toml, ou pour une question Python avancée.
 ---
 
 # Stack Python

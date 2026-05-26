@@ -1,6 +1,6 @@
 ---
 name: deployment
-description: Conventions de déploiement de Cyril — CI/CD GitHub Actions, gh CLI, Docker/docker-compose, serveurs Debian/Ubuntu, Postgres. Charger pour déployer une application, écrire un workflow CI/CD, ou diagnostiquer un déploiement.
+description: Conventions de déploiement — CI/CD GitHub Actions, gh CLI, Docker/docker-compose, serveurs Debian/Ubuntu, Postgres. Charger pour déployer une application, écrire un workflow CI/CD, ou diagnostiquer un déploiement.
 ---
 
 # Deployment

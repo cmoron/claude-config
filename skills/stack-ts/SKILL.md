@@ -1,6 +1,6 @@
 ---
 name: stack-ts
-description: Conventions TypeScript/JavaScript de Cyril — bun uniquement, jamais npm/node. Charger à l'édition de .ts/.tsx, package.json, ou pour une question TypeScript.
+description: Conventions TypeScript/JavaScript — bun uniquement, jamais npm/node. Charger à l'édition de .ts/.tsx, package.json, ou pour une question TypeScript.
 ---
 
 # Stack TypeScript
