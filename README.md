@@ -68,6 +68,7 @@ Besoin d'un agent supplémentaire : s'inspirer de [awesome-claude-code-subagents
 | Commande | Description |
 |----------|-------------|
 | `/commit` | Génère un commit message Conventional Commits |
+| `/autoship <desc>` | Produit une petite feature/fix en autonomie totale (build loop + ship) |
 
 Le reste (Plan, Architect, TDD, Debug, Review, Audit, Document, Migrate…) est fourni par le plugin `superpowers` ; le déploiement par le skill custom `deployment`.
 
@@ -84,6 +85,7 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Document, Migrate…) est 
 - `stack-rust` — conventions Rust (clippy, thiserror/anyhow)
 - `api-design` — conception d'API REST/GraphQL
 - `deployment` — déploiement CI/CD (GitHub Actions, Docker, serveurs Debian/Ubuntu)
+- `autoship` — production autonome d'une petite feature/fix (orchestrateur map→ship)
 
 Les skills Anthropic upstream déployés sont curés via une allowlist dans
 `install.sh` (`ANTHROPIC_ALLOWLIST`) — on ne symlinke que les skills utiles.
