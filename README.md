@@ -15,6 +15,13 @@ rg       # ripgrep (apt install ripgrep / brew install ripgrep)
 # Par stack
 uv       # Python (remplace pip/venv/poetry)
 cargo    # Rust
+
+# Recommandés (dépendances externes des hooks — dégradent proprement si absents)
+rtk      # Rust Token Killer : proxy CLI qui compresse les sorties bash (~68% de
+         # tokens en moins, mesuré). cargo install rtk | brew install rtk
+         # https://github.com/rtk-ai/rtk — la doc RTK.md est versionnée et injectée
+         # dans le contexte (import @RTK.md du CLAUDE.md)
+atuin    # historique shell enrichi (hook PostToolUse Bash)
 ```
 
 ## Installation
@@ -52,16 +59,16 @@ Si la CLI `claude` n'était pas dispo lors du premier `install.sh`, lancer aprè
 
 ### Agents custom (`~/.claude/agents/`)
 
-Sélectionnés automatiquement par Claude selon le contexte. La liste est volontairement courte : tout ce qui peut être couvert par un plugin l'est.
+**Aucun pour l'instant** — `agents/` est volontairement vide. Tout ce qui était
+couvert par des agents custom l'est désormais par les plugins : architecture,
+développement, review, debug et audit via `superpowers` ; design UI via
+`frontend-design`. On n'ajoute un agent custom que pour un besoin qu'aucun plugin
+ne couvre.
 
-| Domaine | Agents |
-|---------|--------|
-| Architecture | `software-architect` |
-| Développement | `fullstack-developer` |
-
-Le design UI est couvert par le plugin `frontend-design`.
-
-Besoin d'un agent supplémentaire : s'inspirer de [awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents) et recopier l'agent adapté dans `agents/`.
+Besoin d'un agent supplémentaire : s'inspirer de
+[awesome-claude-code-subagents](https://github.com/VoltAgent/awesome-claude-code-subagents),
+adapter l'agent (court, FR, taillé pour la stack) et le déposer dans `agents/` —
+`install.sh` le symlinkera.
 
 ### Commandes slash custom (`~/.claude/commands/`)
 
@@ -79,7 +86,7 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Document, Migrate…) est 
 - `linear` — gérer les projets Linear DecaSaaS
 - `openclaw` — VM NAS locale Nestor/openclaw
 - `mvp` — création MVP/POC rapide avec stacks préférées
-- `grill-me` — interview contradictoire sur un plan/design
+- `grill-with-docs` — interview contradictoire qui challenge le plan contre le langage du projet, et persiste les décisions (`CONTEXT.md` glossaire + ADR)
 - `stack-python` — conventions Python (uv, ruff, mypy, pytest)
 - `stack-ts` — conventions TypeScript (bun)
 - `stack-rust` — conventions Rust (clippy, thiserror/anyhow)
@@ -119,11 +126,14 @@ Les plugins sont déclarés dans `settings.json` (`enabledPlugins`) et installé
 | `frontend-design` | Design system / UI |
 | `skill-creator` | Méta-skill pour créer/améliorer des skills |
 
-**Tiers** — 2 plugins
+**Tiers** — 1 plugin
 | Plugin | Marketplace | Rôle |
 |--------|-------------|------|
 | `mgrep` | `mixedbread-ai/mgrep` | Recherche sémantique + web |
-| `claude-mem` | `thedotmack/claude-mem` | Mémoire persistante cross-session |
+
+> Mémoire cross-session : assurée par la **mémoire native** de Claude Code
+> (`MEMORY.md` + `~/.claude/projects/<repo>/memory/`), pas de plugin. claude-mem a
+> été retiré le 2026-06-13 (cf. `docs/audits/2026-06-13-audit-config.md`).
 
 Pour ajouter un plugin : éditer `enabledPlugins` dans `settings.json` puis relancer `./scripts/bootstrap-plugins.sh`.
 

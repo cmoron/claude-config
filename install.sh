@@ -34,8 +34,9 @@ mkdir -p "$CLAUDE_DIR/skills"
 # Rendre les scripts exécutables
 chmod +x "$CONFIG_DIR/scripts/"*.sh
 
-# Symlinks fichiers principaux
-for f in CLAUDE.md settings.json; do
+# Symlinks fichiers principaux (RTK.md est importé par CLAUDE.md via @RTK.md —
+# il doit résider à côté dans ~/.claude/ pour que l'import résolve)
+for f in CLAUDE.md RTK.md settings.json; do
     if [ -f "$CONFIG_DIR/$f" ]; then
         ln -sf "$CONFIG_DIR/$f" "$CLAUDE_DIR/$f"
         echo "  ✓ ~/.claude/$f"
