@@ -32,7 +32,6 @@ Configurés dans `settings.json` ou via `claude mcp add` :
 | `claude.ai Linear` | Remote (Anthropic) | Gestion projets Linear |
 | `claude.ai Gmail` | Remote (Anthropic) | Lecture/envoi emails |
 | `claude.ai Google Calendar` | Remote (Anthropic) | Agenda |
-| `claude-mem` | Plugin (thedotmack) | Mémoire cross-sessions |
 | `context7` | Local (`npx`) | Docs libraries à jour |
 | `playwright` | Local (`npx`) | Browser automation |
 

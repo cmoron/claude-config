@@ -18,7 +18,7 @@
     ],
     "defaultMode": "bypassPermissions"
   },
-  "model": "opus[1m]",
+  "model": "opus",
   "hooks": {
     "PostToolUse": [
       {
@@ -36,7 +36,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "atuin hook claude-code"
+            "command": "command -v atuin >/dev/null && atuin hook claude-code || true"
           }
         ]
       }
@@ -47,7 +47,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "atuin hook claude-code"
+            "command": "command -v atuin >/dev/null && atuin hook claude-code || true"
           }
         ]
       }
@@ -76,7 +76,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "rtk hook claude"
+            "command": "command -v rtk >/dev/null && rtk hook claude || true"
           }
         ]
       }
@@ -102,16 +102,6 @@
           }
         ]
       }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bunx -y ccstatusline@2.2.17 --hook"
-          }
-        ]
-      }
     ]
   },
   "statusLine": {
@@ -122,7 +112,6 @@
   "enabledPlugins": {
     "typescript-lsp@claude-plugins-official": true,
     "mgrep@Mixedbread-Grep": true,
-    "claude-mem@thedotmack": true,
     "pyright-lsp@claude-plugins-official": true,
     "rust-analyzer-lsp@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true,
@@ -132,7 +121,8 @@
     "security-guidance@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "playwright@claude-plugins-official": true
+    "playwright@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -146,15 +136,9 @@
         "source": "github",
         "repo": "mixedbread-ai/mgrep"
       }
-    },
-    "thedotmack": {
-      "source": {
-        "source": "github",
-        "repo": "thedotmack/claude-mem"
-      }
     }
   },
-  "effortLevel": "high",
+  "effortLevel": "xhigh",
   "skipDangerousModePermissionPrompt": true,
   "mcpServers": {
     "linear": {

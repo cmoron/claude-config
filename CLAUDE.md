@@ -53,7 +53,7 @@ Preuve d'exécution obligatoire : tests qui passent, app qui démarre, endpoint 
 | Recherche regex/littérale | `rg` | built-in Grep |
 | Recherche structure (multi-lignes) | `ast-grep` / `sg` | rien d'équivalent |
 | Recherche fichiers | `fd` | built-in Glob |
-| Explorer fichier inconnu >200 lignes | `claude-mem:smart-explore` | `Read` direct |
+| Explorer fichier inconnu >200 lignes | sous-agent `Explore` | `Read` ciblé (offset/limit) |
 | Web | `mgrep --web --answer` | WebSearch (préviens-moi) |
 | Doc de lib (React, FastAPI…) | plugin `context7` | WebSearch ciblée |
 | Extraction JSON/YAML | `jq` / `yq` | jamais `cat` un gros fichier structuré |
@@ -66,7 +66,7 @@ Le pattern général : préférence forte, mais si elle échoue, dis-le et bascu
 - `/compact Keep: <ce qui compte>` quand tu sens des oublis.
 - Gros périmètre à explorer → sous-agent `Explore` → résumé dans le contexte principal.
 - Ne `@`-mentionne pas un gros fichier sans raison — donne chemin + ce que tu cherches.
-- Mémoire cross-session : `claude-mem` (auto via MEMORY.md).
+- Mémoire cross-session : **mémoire native** Claude Code, auto via `MEMORY.md` (index) + fichiers thématiques dans `~/.claude/projects/<repo>/memory/`.
 
 ---
 
