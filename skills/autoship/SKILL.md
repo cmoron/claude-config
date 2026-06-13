@@ -35,7 +35,7 @@ Créer une todo-list (TodoWrite) avec une entrée par phase pour suivre la progr
 
 ## Phase 1 — Map
 
-Comprendre le code pertinent à la tâche via `Explore` ou `claude-mem:smart-explore`.
+Comprendre le code pertinent à la tâche via le sous-agent `Explore`.
 Produire une compréhension **ciblée** en contexte (zones de code impactées, contrats,
 tests existants) — pas un dump de fichiers.
 
@@ -70,9 +70,10 @@ surveillance main + déploiement).
 ## Phase 5bis — Auto-correction post-merge
 
 Déclenchée si, **après le merge sur main**, le CI sur main est rouge OU le healthcheck de
-déploiement est KO. Procédure détaillée dans `references/ship.md`. **Bornée (3 itérations)**.
-Fallback final (retries épuisés, main/prod toujours cassé) : **stop + rapport**, sans
-rollback auto.
+déploiement est KO. Procédure détaillée dans `references/ship.md`. Fix-forward **borné
+(3 itérations)**. Si épuisé et main/prod toujours cassé → **auto-revert** du merge
+(restaure le dernier état sain via PR de revert) plutôt que laisser prod cassé. Prod n'est
+laissé en l'état **que si le revert lui-même échoue** → stop + escalade.
 
 ## Garde-fous (toutes phases)
 
@@ -80,7 +81,8 @@ rollback auto.
 - Règles git absolues : pas de `--no-verify`, pas de force push, rebase/squash (historique
   linéaire), Conventional Commits.
 - Sur abort : état laissé sûr et explicite (branche poussée / PR draft / point d'arrêt
-  nommé), sauf le cas post-merge cassé (assumé).
+  nommé). Post-merge cassé → tenter le fix-forward puis l'auto-revert ; prod n'est laissé
+  cassé que si le revert échoue (escalade explicite).
 
 ## Rapport final (systématique)
 

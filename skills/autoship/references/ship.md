@@ -26,9 +26,15 @@ sur la branche `autoship/<slug>`. Toutes les commandes `gh` supposent `gh` authe
 1. `gh pr merge --squash --delete-branch` (squash = 1 commit, historique linéaire ;
    ne jamais force push).
 2. `gh run watch` sur le run déclenché sur la branche par défaut.
-3. Surveillance du déploiement staging/prod selon le skill `deployment` : attendre la fin
-   du job de déploiement puis vérifier le **healthcheck** (le déploiement n'est validé que
-   si le service répond).
+3. **Gate staging (obligatoire si un staging existe).** Surveillance du déploiement selon
+   le skill `deployment` :
+   - Si une cible **staging** existe (détectée en Phase 0) : déployer staging d'abord,
+     puis vérifier son **healthcheck**. Staging KO → **phase 5bis** (section 4) sans jamais
+     toucher prod. Staging OK → promouvoir vers prod, puis vérifier le healthcheck prod.
+   - Si **aucun staging n'existe** : déployer prod directement, vérifier le healthcheck —
+     et **signaler dans le rapport** que le déploiement s'est fait sans gate staging
+     (facteur de risque additionnel assumé par l'utilisateur via `/autoship`).
+   - Le déploiement n'est validé que si le service répond.
 4. Main CI verte + healthcheck OK → **succès**, passer au rapport final.
 5. Main CI rouge OU healthcheck KO → **phase 5bis** (section 4).
 
@@ -44,6 +50,20 @@ Boucle **bornée à 3 itérations** :
    (section 3, étapes 2–3).
 5. Sain → **succès** (rapport). Toujours cassé → itération suivante.
 
-**Fallback final** (3 itérations épuisées, main/prod toujours cassé) : **stop + rapport**.
-Main/prod est laissé en l'état ; le rapport indique explicitement l'état cassé et l'action
-manuelle requise. Pas de rollback automatique.
+**Fallback final** (3 itérations de fix-forward épuisées, main/prod toujours cassé) :
+**auto-revert** plutôt que laisser prod cassé.
+
+1. Identifier le(s) commit(s) de merge introduit(s) par ce run sur la branche par défaut.
+2. `git revert --no-edit <sha-merge>` (du plus récent au plus ancien si plusieurs) sur une
+   branche `autoship/<slug>-revert`. Le revert restaure le dernier état connu sain — il
+   n'efface pas l'historique (compatible historique linéaire, pas de force push).
+3. `gh pr create --fill` → `gh pr checks --watch`. Le revert doit rendre la CI verte.
+4. CI verte → `gh pr merge --squash --delete-branch` → re-surveiller main + redéployer
+   (section 3 : staging si présent, puis prod) → vérifier le healthcheck.
+5. Sain après revert → **succès dégradé** : la feature n'est PAS livrée mais prod est
+   restaurée. Le rapport le dit explicitement (revert appliqué, raison, action manuelle =
+   reprendre la feature plus tard).
+
+**Si le revert lui-même échoue** (CI du revert rouge, healthcheck toujours KO, ou conflit
+de revert non trivial) : **stop + escalade**. C'est le seul cas où prod est laissé cassé —
+le rapport l'indique explicitement avec l'action manuelle urgente requise.
