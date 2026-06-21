@@ -88,6 +88,11 @@
             "type": "command",
             "command": "$HOME/src/claude-config/scripts/notify-sound.sh",
             "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "$HOME/src/claude-config/scripts/reflect-nudge.sh",
+            "timeout": 10
           }
         ]
       }

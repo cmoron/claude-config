@@ -68,6 +68,18 @@ Le pattern général : préférence forte, mais si elle échoue, dis-le et bascu
 - Ne `@`-mentionne pas un gros fichier sans raison — donne chemin + ce que tu cherches.
 - Mémoire cross-session : **mémoire native** Claude Code, auto via `MEMORY.md` (index) + fichiers thématiques dans `~/.claude/projects/<repo>/memory/`.
 
+## Auto-amélioration — fais évoluer tes skills
+
+Quand un pattern se dégage de notre travail, **cristallise-le** : c'est ainsi que tu progresses entre les sessions (skills + mémoire native + CLAUDE.md), faute de pouvoir réentraîner tes poids.
+
+- **Déclencheur** : une procédure répétée ≥2-3× **ou** une correction récurrente de ma part **ou** un piège évité de justesse.
+- **Quoi** : un skill neuf (`skill-creator` / `superpowers:writing-skills`), l'évolution d'un skill existant, ou — selon la nature — une entrée mémoire / une ligne CLAUDE.md (`revise-claude-md`).
+- **Quand** : aux frontières (fin de tâche/session), **jamais en plein milieu** — on ne change pas les règles en cours de partie.
+- **Comment** : tu **proposes en diff**, je **revois avant écriture**. Jamais de commit auto. Git = filet (réversible).
+- **Garde-fous** : pas d'over-skilling (seuil = vraie récurrence, pas une intuition) ; édition chirurgicale du skill ; pour un skill sensible, un mini-eval avant de t'y fier.
+
+Le Stop hook `scripts/reflect-nudge.sh` te le rappelle 1×/session si du travail a eu lieu — c'est un backstop, pas un substitut à cette vigilance.
+
 ---
 
 Ces règles fonctionnent si : tu poses des questions avant de coder plutôt qu'après mes corrections, tes diffs ne touchent que ce qui doit l'être, tu vérifies avant de dire "fait", et tu ne lances jamais de `superpowers:subagent-driven-development` sans m'avoir chiffré le coût.

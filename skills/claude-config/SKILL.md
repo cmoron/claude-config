@@ -75,6 +75,18 @@ bash install.sh    # symlinks uniquement, idempotent
 bash update.sh
 ```
 
+## Écrire un hook — pièges vérifiés
+
+- **Stop hook : ne JAMAIS bloquer via `exit 2`** → s'affiche « Stop hook error ».
+  Pour forcer un tour proprement : `exit 0` + JSON stdout `{"decision":"block","reason":"…"}`.
+- **Pas de texte non-ASCII multi-ligne via `python … "$ARG"`** en headless : argv
+  décodé sous locale non-UTF-8 → mojibake + JSON cassé. Hand-write le JSON
+  (`printf '%s'`, `\n` échappés) si le texte n'a ni `"` ni `\`.
+- **Tester la sortie d'un hook : `printf`, jamais `echo`** — la Bash tool tourne
+  sous zsh, qui interprète les `\n` de `echo` et corrompt le JSON avant `jq`.
+- **Robustesse** : parse stdin en try/except (cf. `protect-env.sh`), dégrade en
+  `exit 0` (no-op) à la moindre incertitude — ne bloque jamais à tort.
+
 ## Conventions
 
 - Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`)
