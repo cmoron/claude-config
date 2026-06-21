@@ -4,6 +4,23 @@ Appelé par la phase 5 du skill `autoship`. Hypothèse : build vert + tests vert
 sur la branche `autoship/<slug>`. Toutes les commandes `gh` supposent `gh` authentifié
 (cf. skill `deployment`).
 
+## 0. Atterrissage : auto ou PR-prête ?
+
+Classer les zones touchées par le diff (branche vs base) :
+- **DB** : migrations / schéma (`**/migrations/**`, `*.sql` de schéma, `schema.prisma`, …).
+- **Auth/secrets** : auth, permissions, `.env*`, secrets, flux de paiement.
+- **CI-CD/infra** : `.github/workflows/**`, `Dockerfile`, `docker-compose*`, scripts de
+  déploiement / IaC.
+
+- Aucune zone sensible **et** aucun gate amont dégradé (build / spec-gate / verify OK) →
+  **atterrissage auto** : sections 1 → 3 (puis 4 si besoin).
+- Zone sensible touchée **ou** gate amont dégradé → **atterrissage PR-prête** : sections 1
+  et 2 seulement (commit → PR → CI verte), puis **stop avant merge/deploy** → rapport
+  « PR prête, raison : <zone sensible / gate> ». Aucune question.
+
+La **taille du diff** n'influe pas sur l'atterrissage (on va au bout) ; la signaler dans le
+rapport comme simple indicateur.
+
 ## 1. Commit & PR
 
 1. Commit conventionnel (logique de la commande `/commit`) : `<type>(<scope>): <quoi>`,
@@ -15,13 +32,16 @@ sur la branche `autoship/<slug>`. Toutes les commandes `gh` supposent `gh` authe
 ## 2. CI de la PR
 
 1. `gh pr checks --watch` (ou `gh run watch <run-id>`) jusqu'à complétion.
-2. CI **verte** → aller en section 3.
+2. CI **verte** → atterrissage **auto** : section 3. Atterrissage **PR-prête** : stop ici,
+   PR verte laissée pour revue, rapport « PR prête » (pas de merge).
 3. CI **rouge** → diagnostiquer via `gh run view <id> --log-failed`, corriger sur la
    branche, recommit, repush. **Borné à 3 tentatives.**
 4. Toujours rouge après 3 tentatives → **abort** : convertir la PR en draft
    (`gh pr ready --undo`), laisser branche + PR en place, rapport. Pas de merge.
 
 ## 3. Merge & surveillance
+
+> N'exécuter qu'en atterrissage **auto** (cf. section 0). En PR-prête : ne rien merger.
 
 1. `gh pr merge --squash --delete-branch` (squash = 1 commit, historique linéaire ;
    ne jamais force push).
