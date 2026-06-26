@@ -59,8 +59,11 @@ Ce skill condense le savoir non-évident vérifié sur le terrain. **Lis d'abord
    SOUS PHYSIQUE = un petit nœud rclpy qui publie sur `vessel_cmd_array` (cf.
    `references/run-and-verify.md`).
 
-(Bonus WSL2/WSLg : le rendu GL tombe sur `llvmpipe` (soft) par défaut ; forcer
-`GALLIUM_DRIVER=d3d12` pour l'accélération GPU. Déjà dans `setup_env.sh`.)
+(Bonus WSL2/WSLg : le rendu OpenGL tombe sur `llvmpipe` (soft) par défaut ; forcer
+`GALLIUM_DRIVER=d3d12` pour la **GUI gz** accélérée (déjà dans `setup_env.sh`). ⚠️ Mais le
+frontend **Unity HDRP rend en Vulkan**, et WSLg n'expose aucun device Vulkan GPU (lavapipe
+CPU est refusé par Unity) → HDRP KO sans **Dozen** ; détail + pont gz→Unity dans
+`references/render-bridge-and-coordinates.md`.)
 
 ## Quick start
 
@@ -109,6 +112,13 @@ vendoriser d'assets GPL (ex. ArduPilot SITL_Models) ou sans droit de redistribut
   Blender 4.5 + blender-mcp (gotcha WSLg : fenêtre non-maximisée `-p`).
 - `references/run-and-verify.md` — orchestration xdyn co-sim, `xdyn-for-cs` (args, ports),
   vérif headless, oracle de déplacement, réf `scenario_launch.sh`.
+- `references/ecosystem-and-architecture.md` — où trouver quoi : index du **wiki** (15 pages),
+  le repo **`LOTUSim-generic-scenario`** (installeur auto + run config-driven + `DIAGRAMS.md` +
+  Player Unity prébuildé), les 3 repos Unity, le fork de travail.
+- `references/render-bridge-and-coordinates.md` — le flux gz↔xdyn↔Unity : commander
+  (`<thrusters>` vs `<control_surfaces>` à angle), conventions de repère (NED/ENU/Unity,
+  ordre `qr,qi,qj,qk`, `Z→-Y`), pont `render_plugin`/Addressables/namespace, **mur HDRP sous
+  WSLg** (→ Dozen), gotcha mesh (`.dae` Blender cassé → FBX `bake_space_transform`).
 
 ## Scripts (autoportants, à adapter au chemin du workspace)
 
