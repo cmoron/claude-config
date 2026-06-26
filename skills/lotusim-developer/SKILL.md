@@ -65,6 +65,14 @@ frontend **Unity HDRP rend en Vulkan**, et WSLg n'expose aucun device Vulkan GPU
 CPU est refusé par Unity) → HDRP KO sans **Dozen** ; détail + pont gz→Unity dans
 `references/render-bridge-and-coordinates.md`.)
 
+(Bonus macOS : sur Apple Silicon le mur Vulkan/HDRP de WSL disparaît — Unity rend en **Metal**.
+Approche validée = conteneur amd64 émulé (Rosetta) headless + Unity natif comme client de rendu.
+Pièges génériques : xdyn x86-64 → Rosetta (pas arm64), `FASTDDS_BUILTIN_TRANSPORTS` UDPv4 →
+**DEFAULT** (SHM, sinon découverte abonné-avant-publisher KO), `ros_tcp_endpoint` mono-thread
+dont l'`accept()` est affamé sous charge → **connect-first**, la scène applicative Photon
+(`GameManager`/`Launcher`) qui détruit le `LotusimConnector` quand on joue standalone, socket
+Unity zombie qui coince le proxy Docker. § 6 de `render-bridge-and-coordinates.md`.)
+
 ## Quick start
 
 ```bash
@@ -118,7 +126,9 @@ vendoriser d'assets GPL (ex. ArduPilot SITL_Models) ou sans droit de redistribut
 - `references/render-bridge-and-coordinates.md` — le flux gz↔xdyn↔Unity : commander
   (`<thrusters>` vs `<control_surfaces>` à angle), conventions de repère (NED/ENU/Unity,
   ordre `qr,qi,qj,qk`, `Z→-Y`), pont `render_plugin`/Addressables/namespace, **mur HDRP sous
-  WSLg** (→ Dozen), gotcha mesh (`.dae` Blender cassé → FBX `bake_space_transform`).
+  WSLg** (→ Dozen), **bring-up macOS** (conteneur amd64 Rosetta + Unity Metal : SHM,
+  connect-first, redirection de scène Photon, socket zombie), gotcha mesh (`.dae` Blender cassé
+  → FBX `bake_space_transform`).
 
 ## Scripts (autoportants, à adapter au chemin du workspace)
 
