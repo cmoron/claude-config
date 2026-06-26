@@ -57,7 +57,9 @@ Ce skill condense le savoir non-évident vérifié sur le terrain. **Lis d'abord
    Le `waypoint_follower` n'émet QUE du status : c'est un mode **cinématique** séparé,
    **aucun world ne le combine** avec `physics_engine_interface`. → Bouger un vaisseau
    SOUS PHYSIQUE = un petit nœud rclpy qui publie sur `vessel_cmd_array` (cf.
-   `references/run-and-verify.md`).
+   `references/run-and-verify.md`). Le **pattern de référence** vit dans
+   **`LOTUSim-generic-scenario`** (`lrauv_propeller.py`), **pas dans le core** — c'est là que
+   vivent les contrôleurs (cf. `references/ecosystem-and-architecture.md`).
 
 (Bonus WSL2/WSLg : le rendu OpenGL tombe sur `llvmpipe` (soft) par défaut ; forcer
 `GALLIUM_DRIVER=d3d12` pour la **GUI gz** accélérée (déjà dans `setup_env.sh`). ⚠️ Mais le
@@ -110,6 +112,10 @@ Workflow PR (`CONTRIBUTING.md`) : issue (label `new_model`) → s'annoncer → f
 implémenter → tester → PR référençant l'issue. **Licence EPL-2.0** : ne jamais
 vendoriser d'assets GPL (ex. ArduPilot SITL_Models) ou sans droit de redistribution
 (ex. CAD constructeur) — réauthoring à partir de dimensions publiques uniquement.
+
+⚠️ **Répartition** : le **modèle** (assets) va dans le **core** ; son **contrôleur/scénario**
+va dans **`LOTUSim-generic-scenario`** (`src/agents/`), **pas** dans le core (cf.
+`references/ecosystem-and-architecture.md`).
 
 ## Références (charger selon le besoin)
 

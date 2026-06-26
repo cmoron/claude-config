@@ -1,5 +1,9 @@
 # Anatomie d'un modèle et d'un world
 
+> **Périmètre** : ce fichier couvre le **modèle** (assets, dans le **core**) et le **world**.
+> Le **comportement/contrôleur** d'un vaisseau ne vit **pas** ici — il va dans
+> **`LOTUSim-generic-scenario`** (`src/agents/`), cf. `ecosystem-and-architecture.md`.
+
 ## Modèle : `assets/models/<name>/`
 
 ```

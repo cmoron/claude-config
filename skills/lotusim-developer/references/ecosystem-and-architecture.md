@@ -36,6 +36,24 @@ Getting-Started du wiki survole). Contient :
   ⚠️ Rend du HDRP → sous WSLg il heurte le même mur Vulkan que l'Éditeur (cf.
   `render-bridge-and-coordinates.md` § « Mur HDRP sous WSLg »).
 
+**C'est LE template du projet utilisateur *out-of-tree*** (workspace colcon séparé qui
+consomme le core). La répartition qu'il impose :
+
+- **core** = moteur + **bibliothèque de modèles** (`assets/models/`) + worlds. **Aucun
+  contrôleur** : `vessel_cmd_array` y est seulement *consommé* par `physics_interface_plugin`.
+- **generic-scenario** = **comportements** (un **package ROS2 par agent**,
+  `src/agents/<name>/<name>.py`) + **scénarios** (config JSON `src/simulation_run/config/`,
+  ex. `defenseScenario.json`) + bridges (`src/gz_ros2_bridge`) + le Player Unity.
+- **projet perso** = la tuyauterie de démo (scripts, source mesh Blender, captures).
+
+**Pattern de contrôleur** (où mettre un pilote) :
+`src/external_packages/lrauv_propeller/lrauv_propeller.py` hérite de la classe agent, crée un
+publisher sur `/<world>/vessel_cmd_array` et envoie `{"<thruster>(rpm)": …}`. C'est **boucle
+ouverte** (séquence rpm sur timer) sur un **thruster** ; un contrôleur **closed-loop**
+(P-control sur la pose) et/ou des **`<control_surfaces>` à angle** (voile/safran) sont des
+enrichissements légitimes (cf. Focus V2). → un nouveau pilote va dans `src/agents/<name>/`,
+**pas** dans le core.
+
 ## Les 3 repos Unity (`naval-group/…`)
 
 | Repo | Rôle |
