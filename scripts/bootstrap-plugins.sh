@@ -21,6 +21,7 @@ fi
 echo "→ Marketplaces"
 claude plugin marketplace add anthropics/claude-plugins-official
 claude plugin marketplace add mixedbread-ai/mgrep
+claude plugin marketplace add DietrichGebert/ponytail
 echo ""
 
 # 2. Plugins activés dans settings.json
