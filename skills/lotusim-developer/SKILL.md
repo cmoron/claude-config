@@ -1,142 +1,114 @@
 ---
 name: lotusim-developer
-description: Construire, lancer et contribuer à LOTUSim (simulateur maritime ROS2 + Gazebo + xdyn de Naval Group). Charger pour installer/builder LOTUSim, ajouter un véhicule/modèle, lancer une simulation avec physique, débugger un vaisseau qui ne bouge pas, ou préparer une PR. Indispensable avant toute commande `lotusim`/`gz` sur ce projet — l'archi (physique = co-sim xdyn externe, rendu Gazebo OU Unity) piège quiconque ne la connaît pas.
+description: Build, run, and contribute to LOTUSim (Naval Group's ROS2 + Gazebo + xdyn maritime simulator). Use to install/build LOTUSim, add a vehicle/model, run a simulation with physics, debug a vessel that won't move, or prepare a PR. Essential before any `lotusim`/`gz` command — the architecture (physics = external xdyn co-sim, rendering in Gazebo OR Unity) traps anyone who doesn't know it.
 ---
 
 # LOTUSim developer
 
-LOTUSim = simulateur naval multi-agents **open-source (EPL-2.0)** de Naval Group.
-Stack : **ROS2 + Gazebo** (rendu/orchestration) + **xdyn** (dynamique des corps, en
-co-simulation). Repo : `github.com/naval-group/LOTUSim`. Fork de travail :
-`cmoron/LOTUSim` (origin) ← `naval-group/LOTUSim` (upstream).
+LOTUSim is Naval Group's open-source (EPL-2.0) multi-agent maritime simulator.
+Stack: **ROS2 + Gazebo** (orchestration/rendering) + **xdyn** (rigid-body
+dynamics, in co-simulation). Repo: `github.com/naval-group/LOTUSim`.
 
-Ce skill condense le savoir non-évident vérifié sur le terrain. **Lis d'abord les
-6 pièges ci-dessous** — chacun coûte des heures si on l'ignore.
+This skill condenses non-obvious, field-verified knowledge. **Read the 6
+pitfalls below first** — each one costs hours if ignored.
 
-## Les 6 pièges (à connaître AVANT de coder)
+## The 6 pitfalls (know these BEFORE coding)
 
-1. **La physique est un serveur xdyn EXTERNE, pas un plugin gz.** Le
-   `physics_interface_plugin` de Gazebo est un *client websocket* qui se connecte à
-   un `xdyn-for-cs` lancé séparément (un par vaisseau, sur un port TCP : 12345,
-   12346…). **`lotusim run` ne lance que `gz` — PAS xdyn.** Sans serveur xdyn qui
-   écoute, le vaisseau spawn et se rend mais **n'a aucune dynamique** :
+1. **Physics is an EXTERNAL xdyn server, not a Gazebo plugin.** Gazebo's
+   `physics_engine_interface` is a *websocket client* that connects to an
+   `xdyn-for-cs` launched separately (one per vessel, on a TCP port: 12345,
+   12346…). **`lotusim run` launches only `gz` — NOT xdyn.** With no xdyn server
+   listening, a vessel spawns and renders but has **no dynamics**:
    `XdynWebsocket::onFail` → `loadVessel: Loading failed, Removing physics`.
-   → Pour rouler avec physique : `scripts/run_demo_world.sh` ou voir
-   `references/run-and-verify.md`.
+   → To run with physics: see `references/run-and-verify.md`.
 
-2. **Beaucoup de modèles n'ont AUCUN `<visual>`** (juste de la collision). Les
-   navires comme `wamv`, `dtmb_hull`, `lrauv` se rendent dans **Unity**
-   (`render_plugin` → ROS2 → client Unity), donc dans la **GUI Gazebo ils sont
-   invisibles** (toggle *Entity Tree → clic droit → View → Collisions* pour les
-   voir). Pour qu'un vaisseau s'affiche directement dans gz, lui donner un
-   `<visual>` — c'est un pattern LOTUSim légitime (cf. `fremm`, `commando`).
+2. **Many models have NO `<visual>`** (collision only). Ships such as `wamv`,
+   `dtmb_hull`, `lrauv` render in **Unity** (`render_plugin` → ROS2 → Unity
+   client), so in the **Gazebo GUI they are invisible** (toggle *Entity Tree →
+   right-click → View → Collisions* to see them). To display a vessel directly
+   in gz, give it a `<visual>` — a legitimate LOTUSim pattern (cf. `fremm`,
+   `commando`).
 
-3. **Ubuntu 24.04 (noble) → ROS2 Jazzy + Gazebo Harmonic.** Pas Humble (= 22.04).
-   Harmonic ⇒ préfixe **`gz`** (`gz sim`, `gz.msgs.*`), jamais `ign`/Fortress. Le
-   wrapper `launch/lotusim` auto-détecte le codename et fixe `ROS_DISTRO`/
-   `GAZEBO_VERSION` tout seul. Install : `lotusim install`. → `references/setup-and-build.md`.
+3. **Ubuntu 24.04 (noble) → ROS2 Jazzy + Gazebo Harmonic.** Not Humble (= 22.04).
+   Harmonic ⇒ prefix **`gz`** (`gz sim`, `gz.msgs.*`), never `ign`/Fortress. The
+   `launch/lotusim` wrapper auto-detects the codename and sets `ROS_DISTRO`/
+   `GAZEBO_VERSION` on its own. Install: `lotusim install`.
 
-4. **Les scripts ROS sont bash-only.** `source /opt/ros/jazzy/setup.bash` casse sous
-   zsh (`complete: command not found`, `${BASH_SOURCE}` vide → mauvais chemins, et
-   `CMAKE_PREFIX_PATH`/`AMENT_PREFIX_PATH` non posés → build qui ne trouve pas
-   `geometry_msgs`). Sous zsh : sourcer `setup.zsh`, ou tout passer par le wrapper
-   `lotusim` (shebang `#!/bin/bash`). Utiliser `scripts/setup_env.sh` (shell-aware).
+4. **ROS setup scripts are bash-only.** `source /opt/ros/jazzy/setup.bash` breaks
+   under zsh (`complete: command not found`, empty `${BASH_SOURCE}` → wrong
+   paths, and `CMAKE_PREFIX_PATH`/`AMENT_PREFIX_PATH` unset → a build that can't
+   find `geometry_msgs`). Under zsh: source `setup.zsh`, or go through the
+   `lotusim` wrapper (shebang `#!/bin/bash`).
 
-5. **`pkill -f "gz sim"` / `pkill xdyn-for-cs` se SUICIDENT.** Le pattern matche la
-   ligne de commande de ton propre shell (qui contient ce texte) → auto-kill
-   (exit ~144). Capturer les PID (`pid=$!`) et `kill "$pid"`, ou utiliser un
-   `trap cleanup EXIT` (comme dans `run_demo_world.sh`).
+5. **`pkill -f "gz sim"` / `pkill xdyn-for-cs` KILL THEMSELVES.** The pattern
+   matches your own shell's command line (which contains that text) → self-kill
+   (exit ~144). Capture the PIDs (`pid=$!`) and `kill "$pid"`, or use a
+   `trap cleanup EXIT`.
 
-6. **En co-sim, la POUSSÉE ne vient ni du yaml `commands:` ni du `waypoint_follower`.**
-   `xdyn-for-cs` **ignore** le bloc `commands:` du yaml. Les consignes de thrusters se
-   **publient** sur le topic ROS2 `/<world>/vessel_cmd_array`
-   (`lotusim_msgs/msg/VesselCmdArray`) : chaque `VesselCmd.cmd_string` est un JSON
-   `{"<thruster>(rpm)": <val>, "<thruster>(P/D)": <val>}` que le
-   `physics_interface_plugin` forwarde tel quel à xdyn. Sans publisher → défaut câblé
-   `<thruster>(rpm)=2.0` → poussée quasi nulle (warning `Wageningen … n too small`).
-   Le `waypoint_follower` n'émet QUE du status : c'est un mode **cinématique** séparé,
-   **aucun world ne le combine** avec `physics_engine_interface`. → Bouger un vaisseau
-   SOUS PHYSIQUE = un petit nœud rclpy qui publie sur `vessel_cmd_array` (cf.
-   `references/run-and-verify.md`). Le **pattern de référence** vit dans
-   **`LOTUSim-generic-scenario`** (`lrauv_propeller.py`), **pas dans le core** — c'est là que
-   vivent les contrôleurs (cf. `references/ecosystem-and-architecture.md`).
-
-(Bonus WSL2/WSLg : le rendu OpenGL tombe sur `llvmpipe` (soft) par défaut ; forcer
-`GALLIUM_DRIVER=d3d12` pour la **GUI gz** accélérée (déjà dans `setup_env.sh`). ⚠️ Mais le
-frontend **Unity HDRP rend en Vulkan**, et WSLg n'expose aucun device Vulkan GPU (lavapipe
-CPU est refusé par Unity) → HDRP KO sans **Dozen** ; détail + pont gz→Unity dans
-`references/render-bridge-and-coordinates.md`.)
-
-(Bonus macOS : sur Apple Silicon le mur Vulkan/HDRP de WSL disparaît — Unity rend en **Metal**.
-Approche validée = conteneur amd64 émulé (Rosetta) headless + Unity natif comme client de rendu.
-Pièges génériques : xdyn x86-64 → Rosetta (pas arm64), `FASTDDS_BUILTIN_TRANSPORTS` UDPv4 →
-**DEFAULT** (SHM, sinon découverte abonné-avant-publisher KO), `ros_tcp_endpoint` mono-thread
-dont l'`accept()` est affamé sous charge → **connect-first**, la scène applicative Photon
-(`GameManager`/`Launcher`) qui détruit le `LotusimConnector` quand on joue standalone, socket
-Unity zombie qui coince le proxy Docker. § 6 de `render-bridge-and-coordinates.md`.)
+6. **In co-sim, THRUST comes neither from the yaml `commands:` block nor from the
+   `waypoint_follower`.** `xdyn-for-cs` **ignores** the yaml `commands:` block.
+   Thruster setpoints are **published** on the ROS2 topic
+   `/<world>/vessel_cmd_array` (`lotusim_msgs/msg/VesselCmdArray`): each
+   `VesselCmd.cmd_string` is a JSON `{"<thruster>(rpm)": <val>,
+   "<thruster>(P/D)": <val>}` that `physics_interface_plugin` forwards verbatim
+   to xdyn. With no publisher → hardcoded default `<thruster>(rpm)=2.0` →
+   near-zero thrust (warning `Wageningen … n too small`). The `waypoint_follower`
+   emits status only: it is a separate **kinematic** mode, and **no world
+   combines it** with `physics_engine_interface`. → Moving a vessel UNDER PHYSICS
+   = a small rclpy node publishing on `vessel_cmd_array` (cf.
+   `references/run-and-verify.md`). The **reference pattern** lives in
+   **`LOTUSim-generic-scenario`** (`lrauv_propeller.py`), **not in the core** —
+   that's where controllers live (cf. `references/architecture.md`).
 
 ## Quick start
 
 ```bash
-# 1. Environnement (à sourcer avant tout — shell-aware bash/zsh, GPU, chemins gz)
-source ~/lotusim_ws/setup_env.sh          # cf. scripts/setup_env.sh à adapter au workspace
+# Container (reproducible; see AGENTS.md for the mount-and-build pattern)
+docker run --rm -it ghcr.io/naval-group/lotusim:latest bash
 
-# 2. Install (une fois) — ROS2 Jazzy + Gazebo Harmonic en natif, puis colcon build
-lotusim install            # deps (sudo) + build + UI ; ou `lotusim install_lotus` (sans UI)
-lotusim build              # rebuild seul (sous bash) ; `clean_build` pour repartir propre
+# Native install / build (bash only)
+lotusim install            # ROS2 Jazzy + Gazebo Harmonic + colcon build
+lotusim build              # rebuild only; clean_build to start fresh
 
-# 3. Lancer un monde AVEC physique (xdyn server(s) + gz) — c'est le piège n°1
-~/lotusim_ws/run_demo_world.sh xdyn_multithread_test.world dtmb_hull/dtmb-xdyn.yml 12345 12346
-#   --headless en dernier arg pour sans GUI
+# Run a world WITH physics (xdyn server(s) + gz) — pitfall #1:
+#   start one xdyn-for-cs per vessel (each on its TCP port), then:
+lotusim run <world>.world           # add --gui for the Gazebo GUI
 
-# 4. Lancer un monde SANS physique (gz seul — debug rendu/plugins)
-lotusim run --gui <world>.world      # GUI ;  sans --gui = headless (gz sim -s)
+# Run a world WITHOUT physics (gz only — render / plugin debug)
+lotusim run --gui <world>.world
 ```
 
-Succès physique = log `PhysicsInterfacePlugin::loadVessel: ... physics in domain
-Surface init completed` + `XdynWebsocket::onOpen`. Échec = `onFail` / `unable to
-connect` → aucun serveur xdyn sur le port, ou port/uri qui ne matchent pas le world.
+Physics success = log `PhysicsInterfacePlugin::loadVessel: ... Surface init
+completed` + `XdynWebsocket::onOpen`. Failure = `onFail` / `unable to connect` →
+no xdyn server on the port, or a port/uri that does not match the world.
 
-## Ajouter un véhicule (le cas de contribution type)
+## Adding a vehicle (the typical contribution)
 
-Un modèle vit dans `assets/models/<name>/` : `model.config`, `model.sdf` (SDF 1.10,
-minimal : collision + capteurs ; ajouter un `<visual>` pour le voir dans gz),
-`<name>.yaml` (**modèle xdyn** : inerties, added-mass, damping, propulsion — c'est
-là qu'est la dynamique), `meshes/` (.dae visual + une .stl pour l'hydrostatique xdyn,
-générables via **Blender 4.5 + blender-mcp** — cf. `references/model-world-anatomy.md`).
-Le véhicule est wiré dans un world via `<include>` + `<lotus_param>`
-(`physics_engine_interface` → port xdyn + thrusters ; `waypoint_follower` ;
-`render_interface`). Templates complets + protocole : **`references/model-world-anatomy.md`**.
+A model lives in `assets/models/<name>/`: `model.config`, `model.sdf` (SDF 1.10,
+minimal: collision + sensors; add a `<visual>` to see it in gz), `<name>.yaml`
+(the **xdyn model**: inertia, added mass, damping, propulsion — this is where the
+dynamics are), `meshes/` (.dae visual + one .stl for xdyn hydrostatics). The
+vehicle is wired into a world via `<include>` + `<lotus_param>`
+(`physics_engine_interface` → xdyn port + thrusters; `waypoint_follower`;
+`render_interface`). Full templates + protocol: `references/models-and-worlds.md`.
 
-Workflow PR (`CONTRIBUTING.md`) : issue (label `new_model`) → s'annoncer → fork →
-implémenter → tester → PR référençant l'issue. **Licence EPL-2.0** : ne jamais
-vendoriser d'assets GPL (ex. ArduPilot SITL_Models) ou sans droit de redistribution
-(ex. CAD constructeur) — réauthoring à partir de dimensions publiques uniquement.
+⚠️ **Split:** the **model** (assets) goes in the **core**; its
+**controller/scenario** goes in **`LOTUSim-generic-scenario`** (`src/agents/`),
+**not** the core (cf. `references/architecture.md`).
 
-⚠️ **Répartition** : le **modèle** (assets) va dans le **core** ; son **contrôleur/scénario**
-va dans **`LOTUSim-generic-scenario`** (`src/agents/`), **pas** dans le core (cf.
-`references/ecosystem-and-architecture.md`).
+PR workflow (`CONTRIBUTING.md`): issue (label `new_model`) → announce yourself →
+fork → implement → test → PR referencing the issue. **License EPL-2.0**: never
+vendor GPL assets (e.g. ArduPilot SITL_Models) or assets without redistribution
+rights (e.g. manufacturer CAD); re-author from public dimensions only.
 
-## Références (charger selon le besoin)
+## References (load as needed)
 
-- `references/setup-and-build.md` — install native (Jazzy/Harmonic), workspace colcon,
-  GPU WSLg, gotcha shell, ce que fait `setup_env.sh`, Docker (CI).
-- `references/model-world-anatomy.md` — anatomie `model.config`/`model.sdf`/`<name>.yaml`,
-  bloc `<lotus_param>`, visual-vs-Unity, templates copiables, génération des meshes via
-  Blender 4.5 + blender-mcp (gotcha WSLg : fenêtre non-maximisée `-p`).
-- `references/run-and-verify.md` — orchestration xdyn co-sim, `xdyn-for-cs` (args, ports),
-  vérif headless, oracle de déplacement, réf `scenario_launch.sh`.
-- `references/ecosystem-and-architecture.md` — où trouver quoi : index du **wiki** (15 pages),
-  le repo **`LOTUSim-generic-scenario`** (installeur auto + run config-driven + `DIAGRAMS.md` +
-  Player Unity prébuildé), les 3 repos Unity, le fork de travail.
-- `references/render-bridge-and-coordinates.md` — le flux gz↔xdyn↔Unity : commander
-  (`<thrusters>` vs `<control_surfaces>` à angle), conventions de repère (NED/ENU/Unity,
-  ordre `qr,qi,qj,qk`, `Z→-Y`), pont `render_plugin`/Addressables/namespace, **mur HDRP sous
-  WSLg** (→ Dozen), **bring-up macOS** (conteneur amd64 Rosetta + Unity Metal : SHM,
-  connect-first, redirection de scène Photon, socket zombie), gotcha mesh (`.dae` Blender cassé
-  → FBX `bake_space_transform`).
-
-## Scripts (autoportants, à adapter au chemin du workspace)
-
-- `scripts/setup_env.sh` — env natif complet (suppose `~/lotusim_ws` avec `src/LOTUSim`).
-- `scripts/run_demo_world.sh` — lance N serveurs xdyn puis gz, cleanup par PID/trap.
+- `references/architecture.md` — where to find what: the wiki index, the
+  **`LOTUSim-generic-scenario`** repo (controllers/scenarios), the Unity repos,
+  the ecosystem map; plus the gz↔xdyn↔Unity data flow and coordinate conventions
+  (NED/ENU/Unity, quaternion `qr,qi,qj,qk` order, `Z→-Y`).
+- `references/models-and-worlds.md` — anatomy of `model.config`/`model.sdf`/
+  `<name>.yaml`, the `<lotus_param>` block, visual-vs-Unity, copy-paste
+  templates, mesh generation.
+- `references/run-and-verify.md` — xdyn co-sim orchestration, `xdyn-for-cs`
+  (args, ports), headless verification, the "did the vessel actually move?" oracle.

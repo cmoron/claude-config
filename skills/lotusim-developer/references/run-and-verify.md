@@ -1,85 +1,81 @@
-# Lancer avec physique & vérifier
+# Running with physics & verifying
 
-## L'archi de co-simulation (le point clé)
+## The co-simulation architecture (the key point)
 
 ```
-   xdyn-for-cs (serveur websocket, 1 par vaisseau)        gz sim (Gazebo)
+   xdyn-for-cs (websocket server, 1 per vessel)          gz sim (Gazebo)
    ws://127.0.0.1:12345  <───────────────────────────  physics_interface_plugin (client)
         ^                                                       │
-        │ dynamique (xdyn lit <name>.yaml)                      │ pose, waypoint, capteurs
+        │ dynamics (xdyn reads <name>.yaml)                     │ pose, waypoint, sensors
 ```
 
-- `physics_interface_plugin` (dans gz) est un **client** ; il lit l'`<uri>` du
-  `<lotus_param><physics_engine_interface>` du world et se connecte.
-- `xdyn-for-cs` (binaire prébuilt dans `physics/`) est le **serveur** : il calcule la
-  dynamique 6 DOF à partir du `<name>.yaml`. **Un process par vaisseau**, un port
-  unique chacun (12345, 12346, …).
-- `lotusim run` **ne lance QUE gz**. Il faut démarrer xdyn à part, sinon :
+- `physics_interface_plugin` (inside gz) is a **client**; it reads the `<uri>`
+  from the world's `<lotus_param><physics_engine_interface>` and connects.
+- `xdyn-for-cs` (prebuilt binary in `physics/`) is the **server**: it computes
+  the 6-DOF dynamics from `<name>.yaml`. **One process per vessel**, each on a
+  unique port (12345, 12346, …).
+- `lotusim run` **launches gz ONLY**. You must start xdyn separately, otherwise:
   `XdynWebsocket::onFail: Failed ws://… → loadVessel: Loading failed, Removing physics`.
 
-### Lancer xdyn-for-cs
+### Launching xdyn-for-cs
 
 ```bash
 xdyn-for-cs <model>.yaml --address 127.0.0.1 --port 12345 --dt 0.2
-#   --dt 0.2 = pas de temps (cf. scenario_launch.sh) ; -s rk4 par défaut (euler/rkck dispo)
-#   --verbose pour voir les échanges ; -w pour le détail websocket
+#   --dt 0.2 = time step ; -s rk4 by default (euler/rkck available)
+#   --verbose to see the exchanges ; -w for the websocket detail
 ```
 
-Orchestrateur de référence (multi-agents, le "vrai" lanceur) :
+Reference orchestrator (multi-agent, the "real" launcher):
 `LOTUSim-generic-scenario/src/simulation_run/executable/scenario_launch.sh`
-(lance un `xdyn-for-cs agent.yml --port $port --dt 0.2` par agent, puis gz, et
-`pkill -f xdyn-for-cs` au cleanup).
+(starts one `xdyn-for-cs agent.yml --port $port --dt 0.2` per agent, then gz,
+and `pkill -f xdyn-for-cs` on cleanup).
 
-### Helper fourni
+For a local run, a small wrapper typically starts one xdyn server per port, then
+`gz`, and **kills the servers by PID via a `trap`** (never `pkill` — see runtime
+pitfalls).
 
-`scripts/run_demo_world.sh <world> <model-rel.yml> <port…> [--headless]` :
-lance un serveur xdyn par port, puis `gz` (GUI par défaut), et **tue les serveurs par
-PID via `trap`** (pas de `pkill` auto-suicidaire). Exemple :
-
-```bash
-run_demo_world.sh xdyn_multithread_test.world dtmb_hull/dtmb-xdyn.yml 12345 12346
-```
-
-## Lancer gz (Harmonic)
+## Launching gz (Harmonic)
 
 ```bash
-lotusim run <world>.world          # headless (gz sim -s) — défaut
-lotusim run --gui <world>.world    # avec GUI
-# direct : gz sim -s -v3 -r <world>   (-s serveur seul, -r run, -v3/-v4 verbosité)
+lotusim run <world>.world          # headless (gz sim -s) — default
+lotusim run --gui <world>.world    # with GUI
+# direct: gz sim -s -v3 -r <world>   (-s server only, -r run, -v3/-v4 verbosity)
 ```
 
-Le wrapper pose `GZ_SIM_SYSTEM_PLUGIN_PATH=install/lib`, `GZ_SIM_RESOURCE_PATH=
-assets/models`. Préfixe **`gz`** (Harmonic), pas `ign`.
+The wrapper sets `GZ_SIM_SYSTEM_PLUGIN_PATH=install/lib`,
+`GZ_SIM_RESOURCE_PATH=assets/models`. Prefix **`gz`** (Harmonic), not `ign`.
 
-## Vérifier (oracle = déplacement)
+## Verifying (oracle = displacement)
 
-Pour "ça flotte + ça bouge", l'oracle robuste est le **déplacement mesuré dans la
-sim** (pas le rendu — EGL/OGRE2 fragile sous WSL ; ne jamais gater pass/fail dessus).
-Boucle headless :
+For "it floats + it moves", the robust oracle is the **displacement measured in
+the sim** (not the rendering — EGL/OGRE2 is fragile in headless/remote setups;
+never gate pass/fail on it). Headless loop:
 
 ```
-build → valider SDF (gz sdf -k <file>) → [xdyn server(s)] → spawn headless (gz sim -s -r)
-      → lire pose début/fin → assert dist > seuil → (artefact : plot de trajectoire)
+build → validate SDF (gz sdf -k <file>) → [xdyn server(s)] → spawn headless (gz sim -s -r)
+      → read start/end pose → assert dist > threshold → (artifact: trajectory plot)
 ```
 
-Signaux de log à asserter :
-- `physics in domain Surface init completed` + `XdynWebsocket::onOpen` → physique OK ;
-- `onFail` / `unable to connect` → pas de serveur xdyn / port-uri qui ne matchent pas ;
-- `Failed to load system plugin` → chemin plugin (`GZ_SIM_SYSTEM_PLUGIN_PATH`) ou build ;
-- `dist ≈ 0` → a coulé (mauvaise hydrostatique) ou pas de poussée (aucune consigne sur `vessel_cmd_array`).
+Log signals to assert:
 
-### Source de poussée en co-sim (PIÈGE n°6) : `vessel_cmd_array`, pas le yaml ni le waypoint
+- `physics in domain Surface init completed` + `XdynWebsocket::onOpen` → physics OK;
+- `onFail` / `unable to connect` → no xdyn server / port-uri mismatch;
+- `Failed to load system plugin` → plugin path (`GZ_SIM_SYSTEM_PLUGIN_PATH`) or build;
+- `dist ≈ 0` → sank (bad hydrostatics) or no thrust (no setpoint on `vessel_cmd_array`).
 
-`xdyn-for-cs` **ignore** le bloc `commands:` du yaml. La poussée se **publie** sur le
-topic ROS2 `/<world>/vessel_cmd_array` (`lotusim_msgs/msg/VesselCmdArray`) : le
-`physics_interface_plugin` souscrit et forwarde `VesselCmd.cmd_string` (JSON) à xdyn.
-Clés du `cmd_string` = `"<thruster>(<param>)"`, params `rpm` / `P/D` / `beta` ; les
-noms doivent matcher `<thrusters>` du world ET les actionneurs du yaml. Sans publisher
-→ défaut câblé `rpm=2.0` → poussée quasi nulle. Le `waypoint_follower` n'est PAS cette
-source (status seul, mode cinématique). Publisher minimal :
+### Thrust source in co-sim (PITFALL #6): `vessel_cmd_array`, not the yaml or the waypoint
+
+`xdyn-for-cs` **ignores** the yaml `commands:` block. Thrust is **published** on
+the ROS2 topic `/<world>/vessel_cmd_array` (`lotusim_msgs/msg/VesselCmdArray`):
+`physics_interface_plugin` subscribes and forwards `VesselCmd.cmd_string` (JSON)
+to xdyn. `cmd_string` keys = `"<thruster>(<param>)"`, params `rpm` / `P/D` /
+`beta`; the names must match the world's `<thrusters>` AND the yaml's actuators.
+With no publisher → hardcoded default `rpm=2.0` → near-zero thrust. The
+`waypoint_follower` is NOT this source (status only, kinematic mode). Minimal
+publisher:
 
 ```python
-# pub_thrust.py — fait bouger un vaisseau sous physique (co-sim)
+# pub_thrust.py — makes a vessel move under physics (co-sim)
 import json, rclpy
 from rclpy.node import Node
 from lotusim_msgs.msg import VesselCmd, VesselCmdArray
@@ -91,29 +87,28 @@ n.create_timer(0.1, lambda: pub.publish(
 rclpy.spin(n)
 ```
 
-### Lire la pose (oracle) → il faut le `SceneBroadcaster`
+### Reading the pose (oracle) → you need the `SceneBroadcaster`
 
-Les worlds LOTUSim rendent dans Unity et **n'embarquent pas**
-`gz-sim-scene-broadcaster-system` → aucun topic de pose (et invisible dans la GUI gz).
-Pour mesurer le déplacement (et rendre dans gz), ajouter au world :
+Many LOTUSim worlds (e.g. `xdyn_multithread_test`) render in Unity and **don't
+embed** `gz-sim-scene-broadcaster-system` → no pose topic (and invisible in the
+gz GUI). To measure displacement (and
+render in gz), add to the world
 `<plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>`,
-puis lire `/world/<world>/dynamic_pose/info` (`gz topic -e … --json-output`), extraire
-la pose du vaisseau (jq) et asserter le déplacement horizontal.
+then read `/world/<world>/dynamic_pose/info` (`gz topic -e … --json-output`),
+extract the vessel pose (jq) and assert the horizontal displacement.
 
-## Pièges runtime
+## Runtime pitfalls
 
-- **Shell** : lancer via le wrapper `lotusim` (bash) ou sourcer `setup.zsh` sous zsh.
-- **pkill suicidaire** : `pkill -f "gz sim"`/`xdyn-for-cs` matche ta propre commande →
-  auto-kill (exit ~144). Capturer `$!` et `kill`, ou `trap` (cf. run_demo_world.sh).
-- **Ports** : un par vaisseau ; doivent matcher les `<uri>` du world.
-- **GPU** : `GALLIUM_DRIVER=d3d12` sinon llvmpipe (rendu logiciel).
-- **Gravity 0** dans les worlds : normal, xdyn fait toute la dynamique.
-- **`set -u`** : ne JAMAIS l'activer avant de sourcer l'env ROS (`setup.bash` référence
-  des vars non-définies → le script meurt en silence, exit 1 sans aucune sortie).
-- **`gz sdf -k`** : valide un `model.sdf` mais **échoue sur un world** avec `<include>`
-  (`Unable to find uri[model://…]`, pas de find-callback) → valider le world par un
-  spawn, pas par `-k`.
-- **Mesh de travers ("crabe")** : convention LOTUSim = avant du mesh sur **+y** (cf.
-  `references/model-world-anatomy.md`).
-- **Screenshot GUI** : le service `/gui/screenshot` veut un **répertoire** (il y dépose
-  un PNG horodaté), pas un chemin de fichier.
+- **Shell**: launch via the `lotusim` wrapper (bash) or source `setup.zsh` under zsh.
+- **Suicidal pkill**: `pkill -f "gz sim"`/`xdyn-for-cs` matches your own command
+  line → self-kill (exit ~144). Capture `$!` and `kill`, or use a `trap`.
+- **Ports**: one per vessel; must match the world's `<uri>`.
+- **Gravity 0** in the worlds: normal, xdyn does all the dynamics.
+- **`set -u`**: NEVER enable it before sourcing the ROS env (`setup.bash`
+  references undefined vars → the script dies silently, exit 1 with no output).
+- **`gz sdf -k`**: validates a `model.sdf` but **fails on a world** with
+  `<include>` (`Unable to find uri[model://…]`, no find-callback) → validate a
+  world by spawning it, not with `-k`.
+- **Crabbing mesh**: LOTUSim convention = mesh bow on **+y** (cf. `models-and-worlds.md`).
+- **GUI screenshot**: the `/gui/screenshot` service wants a **directory** (it
+  drops a timestamped PNG there), not a file path.
