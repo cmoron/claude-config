@@ -132,6 +132,27 @@ Ajouter dans le `require("lazy").setup({...})` en `init.lua` :
 - Police : Hack Nerd Font Mono configurée dans Windows Terminal
 - Snap recommandé pour installer la dernière version de Neovim
 
+## Piège treesitter — Neovim 0.12 + nvim-treesitter master archivé
+
+nvim-treesitter (branche master) est **archivé depuis mai 2025** et incompatible
+avec le runtime treesitter de Neovim 0.12. Symptôme : crash à l'ouverture d'un
+fichier (decoration provider `nvim.treesitter.highlighter`) avec
+`attempt to call method 'range' (a nil value)`.
+
+**Cause racine** : sur 0.12, le `match` passé aux directives mappe un capture id
+vers une **liste** de nodes, plus un node unique. Les directives custom de
+nvim-treesitter font `node = match[id]` → `node:range()` sur une table → crash.
+
+**Fix appliqué** (dans `config` du plugin treesitter, `init.lua`) : réenregistrer
+les directives cassées via `vim.treesitter.query.add_directive(..., {force=true})`
+en lisant `match[id][1]`. Couvre les 3 directives d'injection (`downcase!`,
+`set-lang-from-info-string!`, `set-lang-from-mimetype!`) → tous les langages.
+
+⚠️ **Ne PAS** patcher la query d'un langage à la fois (whack-a-mole : bash, ruby,
+php, hcl, hurl, html, markdown sont tous touchés). Fixer la directive une fois.
+Les prédicats `nth?`/`is?`/`kind-eq?` ont le même bug (locals/highlights) mais
+ne crashent pas — à réenregistrer pareil si la coloration déraille un jour.
+
 ## Workflow de modification
 
 ```bash
