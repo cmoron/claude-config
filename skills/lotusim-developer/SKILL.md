@@ -112,3 +112,6 @@ rights (e.g. manufacturer CAD); re-author from public dimensions only.
   templates, mesh generation.
 - `references/run-and-verify.md` — xdyn co-sim orchestration, `xdyn-for-cs`
   (args, ports), headless verification, the "did the vessel actually move?" oracle.
+- `references/debugging-physics.md` — when a model diverges/spins/drifts/behaves wrong:
+  the real-world-difficulty vs model-defect triage first, then numerical / measurement /
+  convention artifacts, and the closed-loop websocket probe for tuning.
