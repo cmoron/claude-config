@@ -6,7 +6,9 @@ description: Pour gérer les projets Linear de l'usine à SaaS — issues, sprin
 # Linear — Usine à SaaS (Cyril + Estelle)
 
 Linear est utilisé pour gérer les projets de l'usine à SaaS.
-Le **MCP remote Linear** est actif — il gère les appels API. Ce skill documente les conventions d'usage.
+Le MCP utilisé est `linear`, déclaré dans `settings.json` (HTTP, `https://mcp.linear.app/sse`) —
+il gère les appels API. Le connecteur claude.ai Linear fait doublon et n'est pas la référence.
+Ce skill documente les conventions d'usage.
 
 ## Équipe
 

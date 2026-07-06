@@ -12,34 +12,42 @@ Ce repo centralise toute la configuration Claude Code personnelle. Il est symlin
 ```
 ~/src/claude-config/
 ├── CLAUDE.md              # Instructions globales (toujours chargé)
+├── RTK.md                 # Doc RTK (Rust Token Killer), importée par CLAUDE.md
 ├── settings.json          # Hooks, permissions, MCPs locaux
-├── agents/                # Sous-agents spécialisés (.md par agent)
 ├── commands/              # Slash commands (/commit, /review, etc.)
 ├── skills/                # Skills auto-chargés (dossier par skill avec SKILL.md)
-├── snippets/              # Blocs injectés dynamiquement (ex: stack spécifique)
+├── config/                # Config d'outils tiers déployée (ex: ccstatusline)
+├── docs/                  # Audits datés + specs/plans superpowers
+├── assets/                # Assets statiques (son de notification)
 ├── scripts/               # Hooks shell (format-on-save, notify-sound, protect-env) + bootstrap-plugins
 ├── install.sh             # Déploie via symlinks — idempotent, relancer sans risque
 ├── update.sh              # Pull + re-installe
 └── upstream/              # Submodule : skills officiels Anthropic (anthropic-skills)
 ```
 
+Pas de dossier `agents/` actuellement (0 agent custom — cf. README § Agents). `snippets/`
+n'existe pas non plus.
+
 ## MCPs actifs
 
-Configurés dans `settings.json` ou via `claude mcp add` :
+Trois origines distinctes, à ne pas confondre :
 
-| MCP | Type | Usage |
-|-----|------|-------|
-| `claude.ai Linear` | Remote (Anthropic) | Gestion projets Linear |
-| `claude.ai Gmail` | Remote (Anthropic) | Lecture/envoi emails |
-| `claude.ai Google Calendar` | Remote (Anthropic) | Agenda |
-| `context7` | Local (`npx`) | Docs libraries à jour |
-| `playwright` | Local (`npx`) | Browser automation |
+| Origine | Où c'est déclaré | Exemples |
+|---|---|---|
+| MCP `settings.json` (`mcpServers`) | Ce repo | `linear` (HTTP, `https://mcp.linear.app/sse`) — le seul MCP settings.json |
+| Plugin (fournit des tools, pas un MCP) | `settings.json` (`enabledPlugins`) | `context7`, `playwright` |
+| Connecteur claude.ai | Compte claude.ai, hors repo | Gmail, Google Calendar, Google Drive, Linear, Coros |
 
-Les remote MCPs (Linear, Gmail, Calendar) ne consomment pas de ressources locales — auth gérée par Anthropic.
+Le connecteur claude.ai Linear fait doublon avec le MCP `linear` de `settings.json` — ce
+dernier est la référence (cf. skill `linear`).
+
+`blender` (MCP local) est déclaré dans `~/.claude.json`, hors repo — expérimentation
+assumée, pas de gouvernance ici.
 
 ## Ajouter un agent
 
-Créer `agents/<name>.md` avec frontmatter YAML :
+`agents/` n'existe pas actuellement (0 agent custom, cf. README). Au besoin : créer
+`agents/<name>.md` avec frontmatter YAML :
 ```markdown
 ---
 name: mon-agent
@@ -48,7 +56,8 @@ model: sonnet  # ou opus, haiku
 ---
 # Instructions...
 ```
-Puis `bash install.sh` pour symlinker dans `~/.claude/agents/`.
+Puis `bash install.sh` pour symlinker dans `~/.claude/agents/` — `install.sh` gère déjà
+ce dossier même s'il est absent aujourd'hui.
 
 ## Ajouter un skill
 
@@ -91,4 +100,16 @@ bash update.sh
 
 - Conventional commits (`feat:`, `fix:`, `docs:`, `chore:`)
 - Ne pas modifier directement dans `~/.claude/` — tout passe par le repo
-- Les snippets dans `snippets/` sont des blocs markdown injectés manuellement ou via hooks
+
+## Checklist anti-dérive — OBLIGATOIRE avant de committer une modif de config
+
+La doc de ce repo a dérivé à 3 audits consécutifs (05, 06, 07/2026). Tout
+changement de config embarque sa doc **dans le même commit** :
+
+- [ ] Ajout/retrait d'un **skill** → liste des skills dans `README.md` § « Skills custom »
+- [ ] Ajout/retrait d'un **plugin** (`enabledPlugins`) → table plugins du `README.md`
+- [ ] Ajout/retrait d'un **hook** → table hooks du `README.md`
+- [ ] Changement de **structure** (dossier créé/supprimé) → § Structure du `README.md` **et** de ce SKILL.md
+- [ ] Ajout/retrait d'un **MCP** → table MCPs de ce SKILL.md
+
+Revue à l'œil, dossier par dossier — pas de script.

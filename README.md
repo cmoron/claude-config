@@ -93,6 +93,8 @@ Le reste (Plan, Architect, TDD, Debug, Review, Audit, Document, Migrate…) est 
 - `api-design` — conception d'API REST/GraphQL
 - `deployment` — déploiement CI/CD (GitHub Actions, Docker, serveurs Debian/Ubuntu)
 - `autoship` — production autonome d'une petite feature/fix (orchestrateur map→ship)
+- `lotusim-developer` — build/run/contribution à LOTUSim (Naval Group, ROS2 + Gazebo + xdyn), débug physique et architecture co-sim
+- `opensource-contributor` — process obligatoire avant PR/issue sur un repo open source qu'on ne possède pas (doublons, CONTRIBUTING/DCO, traçabilité)
 
 Les skills Anthropic upstream déployés sont curés via une allowlist dans
 `install.sh` (`ANTHROPIC_ALLOWLIST`) — on ne symlinke que les skills utiles.
@@ -101,23 +103,25 @@ Les skills Anthropic upstream déployés sont curés via une allowlist dans
 
 | Hook | Script | Déclencheur |
 |------|--------|-------------|
-| Format on save | `scripts/format-on-save.sh` | Après Write/Edit |
-| Protection `.env` | `scripts/protect-env.sh` | Avant Write/Edit |
+| Format on save | `scripts/format-on-save.sh` | Après Write/Edit (PostToolUse) |
+| Protection `.env` | `scripts/protect-env.sh` | Avant Write/Edit (PreToolUse) |
 | Notification sonore | `scripts/notify-sound.sh` | Stop / Notification |
-| Statusline | `bunx ccstatusline` | UserPromptSubmit / Skill |
-| RTK token saver | `rtk hook claude` | Avant Bash |
+| Reflect nudge (backstop auto-amélioration) | `scripts/reflect-nudge.sh` | Stop |
+| Statusline | `bunx ccstatusline --hook` | Avant Skill (PreToolUse) + config `statusLine` |
+| RTK token saver | `rtk hook claude` | Avant Bash (PreToolUse) |
+| Atuin (historique shell enrichi) | `atuin hook claude-code` | Après Bash, succès et échec (PostToolUse / PostToolUseFailure) |
 
 ### Plugins (auto-installés par `install.sh`)
 
 Les plugins sont déclarés dans `settings.json` (`enabledPlugins`) et installés automatiquement par `scripts/bootstrap-plugins.sh` via la CLI `claude plugin install`.
 
-**Officiels (`claude-plugins-official`)** — 11 plugins
+**Officiels (`claude-plugins-official`)** — 12 plugins
 | Plugin | Rôle |
 |--------|------|
 | `typescript-lsp` | LSP TypeScript |
 | `pyright-lsp` | LSP Python |
 | `rust-analyzer-lsp` | LSP Rust |
-| `jdtls-lsp` | LSP Java |
+| `clangd-lsp` | LSP C/C++ (ROS2) |
 | `superpowers` | 14 skills méthodologie (Plan/TDD/Debug/Review/Audit/Document…) |
 | `security-guidance` | Scan passif vulnérabilités |
 | `context7` | Doc à jour des libs |
@@ -125,11 +129,13 @@ Les plugins sont déclarés dans `settings.json` (`enabledPlugins`) et installé
 | `claude-md-management` | Maintenance auto du CLAUDE.md projet |
 | `frontend-design` | Design system / UI |
 | `skill-creator` | Méta-skill pour créer/améliorer des skills |
+| `claude-code-setup` | Recommande des automatisations Claude Code (hooks/skills/agents/MCP) adaptées au repo |
 
-**Tiers** — 1 plugin
+**Tiers** — 2 plugins
 | Plugin | Marketplace | Rôle |
 |--------|-------------|------|
 | `mgrep` | `mixedbread-ai/mgrep` | Recherche sémantique + web |
+| `ponytail` | `DietrichGebert/ponytail` | Force la solution minimale/lazy (à l'essai) |
 
 > Mémoire cross-session : assurée par la **mémoire native** de Claude Code
 > (`MEMORY.md` + `~/.claude/projects/<repo>/memory/`), pas de plugin. claude-mem a
@@ -145,14 +151,20 @@ Pour ajouter un plugin : éditer `enabledPlugins` dans `settings.json` puis rela
 
 ```
 .
-├── agents/          # agents spécialisés non couverts par les plugins
 ├── commands/        # commandes slash custom
 ├── skills/          # skills custom
+├── config/          # config d'outils tiers déployée (ex: ccstatusline)
+├── docs/            # audits datés + specs/plans superpowers
+├── assets/          # assets statiques (son de notification)
 ├── scripts/         # hooks shell + bootstrap-plugins.sh
 ├── upstream/
 │   └── anthropic-skills/              # submodule : skills officiels Anthropic
 ├── CLAUDE.md        # instructions globales pour tous les projets
+├── RTK.md           # doc RTK, importée par CLAUDE.md
 ├── settings.json    # permissions, hooks, plugins
 ├── install.sh       # déploie la config via symlinks dans ~/.claude/
 └── update.sh        # pull + submodules + redéploiement
 ```
+
+Pas de dossier `agents/` actuellement (0 agent custom — cf. § Agents ci-dessus) ;
+`install.sh` le symlinke déjà s'il apparaît.
