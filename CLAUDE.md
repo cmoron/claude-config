@@ -21,6 +21,19 @@ Guidelines comportementales communes à tout projet. À compléter avec les inst
 
 **Garde-fou** : avant `superpowers:subagent-driven-development`, estime le coût (tokens + wallclock). Si <8h de dev estimé, **demande-moi confirmation explicite** avec le chiffrage.
 
+## Délégation par modèle (layering)
+
+Le modèle principal est l'orchestrateur : architecture, arbitrages, debug difficile, synthèse. À partir de M, délègue vers le bas quand il y a du volume ou du parallélisme **et** que le résultat est bon marché à vérifier (tests, typecheck, grep de contrôle) :
+
+- **Déterministe** → pas de modèle : script, hook, commande.
+- **Mécanique à volume** (sweeps de recherche, renames en masse, filtrage) → sous-agent Haiku.
+- **Implémentation bien spécifiée** (spec claire + tests) → sous-agent Sonnet.
+- **Sous-problème complexe** (review, debug d'un module, design local) → sous-agent Opus.
+- **Escalade** : un sous-agent Opus qui échoue ou patine → sous-agent Fable (`model: fable`). Fable n'est pas garanti dans tous les plans : s'il est indispo, l'orchestrateur reprend la tâche inline.
+- **XS/S restent inline** : le coût fixe d'un sous-agent (prompt complet, relecture) dépasse le gain.
+
+Dans le doute, un cran au-dessus : un Sonnet juste du premier coup bat un Haiku repris deux fois.
+
 ## Pendant que tu codes
 
 - Le minimum qui résout le problème. Pas d'abstraction "au cas où", pas de config "pour plus tard", pas de gestion d'erreur pour des cas qui ne peuvent pas arriver.

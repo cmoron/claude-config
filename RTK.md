@@ -32,3 +32,19 @@ Example: `git status` → `rtk git status` (transparent, 0 tokens overhead).
 
 Si `rtk` n'est pas dans le PATH, le hook dégrade silencieusement (cf. garde
 `command -v rtk` dans `settings.json`) — aucune commande Bash n'est bloquée.
+
+## Commandes natives rtk (hors de portée du hook)
+
+Le hook réécrit les commandes standard (git, cargo, pytest…) mais ne peut pas
+choisir une commande native rtk à ma place. À utiliser directement quand pertinent :
+
+```bash
+rtk read <file>       # lecture de code filtrée (60%)
+rtk err <cmd>         # ne garde que les erreurs d'une commande
+rtk log <file>        # logs dédupliqués avec compteurs
+rtk json <file>       # structure JSON sans les valeurs
+rtk summary <cmd>     # résumé d'une sortie verbeuse
+```
+
+⚠️ Ne jamais relancer `rtk init` / `rtk init --global` : il réinjecte ~140 lignes
+dans CLAUDE.md, redondantes avec le hook (bloc retiré le 2026-07-07).
