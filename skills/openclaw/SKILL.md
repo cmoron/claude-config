@@ -115,3 +115,48 @@ Chrome tourne en service systemd permanent sur la VM (Ryzen 5 5600GT, 14 GB RAM,
 4. Vérifier : status + tester via Telegram
 
 Pour les fichiers workspace (SOUL.md, AGENTS.md, etc.), les changements sont lus au prochain message sans redémarrage.
+
+## Montées de version openclaw
+
+**On NE met PAS à jour openclaw via `npm i -g openclaw`.** Le mécanisme canonique est la commande CLI **`openclaw update`** (l'historique de la VM est plein de `openclaw update`).
+
+⚠️ Le `openclaw` du PATH interactif tape un **Node v18** → erreur *"Node v22+ required"*. Invoquer via Node v24 :
+```bash
+NODE=~/.nvm/versions/node/v24.13.1/bin/node
+DIST=~/.nvm/versions/node/v24.13.1/lib/node_modules/openclaw
+$NODE $DIST/dist/index.js update --dry-run        # prévisualiser
+```
+
+- **Canaux** : `--channel stable|beta|dev` (persisté dans `openclaw.json` → bloc `update`, vide = stable par défaut).
+  - `stable` / `beta` → install **mode npm package** : `openclaw update` résout via le package manager, donc **limité à ce qui est publié** (la beta dist-tag peut pointer = stable). Notre install est en mode package (pas de `.git` dans le dist).
+  - `dev` → **bascule en git checkout** (build depuis les sources GitHub) : seul moyen d'avoir du code pas encore packagé, mais bleeding-edge + rebuild à chaque update.
+- `--tag <version|dist-tag|spec>` cible une version précise ; `--dry-run` prévisualise (montre `Target version` + l'action) ; `--no-restart`, `--yes`, `--timeout <s>`.
+- `openclaw update status` (canal + versions) ; `openclaw update wizard` (interactif).
+- **Plugins versionnés séparément** via `openclaw plugins install/update/uninstall` (codex, discord, whatsapp sont des plugins npm externes dans `~/.openclaw/npm/projects/`). Un plugin peut **exiger un runtime ≥ version** : ex. codex 0.139 vit dans `@openclaw/codex@2026.6.6-beta.1` qui exige openclaw runtime ≥2026.6.6-beta.1 — installer le plugin sur un runtime trop vieux est rejeté.
+- Toujours redémarrer après via `openclaw gateway restart` (cf. règle restart), puis vérifier `gateway ready` + heartbeat/telegram dans les logs.
+
+## Re-auth OAuth codex/OpenAI sur la VM headless (tunnel SSH)
+
+La VM **n'a pas de navigateur utilisable** (Chrome sur Xvfb:1 via VNC seulement, pas de copier-coller). Le flow OAuth **par défaut** de codex (`codex login` / `openclaw models auth login --provider openai`) ouvre un serveur de callback sur **`localhost:<port>` de la VM** et y redirige après sign-in → il faut un navigateur qui « revient » sur la VM. Le flow **device** (`--device-code`) est censé éviter ça mais en pratique a posé souci (URL `https://auth.openai.com/codex/device` sans flux de code clair).
+
+**Méthode fiable = forwarder le port de callback via SSH, ouvrir l'URL sur SON navigateur local :**
+```bash
+# 1. Depuis le laptop, ouvrir une session avec le port de callback forwardé
+#    (codex écoute historiquement sur 1455 ; confirmer via le redirect_uri de l'URL affichée)
+ssh -J nas -L 1455:localhost:1455 cyril@192.168.122.100
+
+# 2. Dans cette session, lancer le login SANS --device-code (force le flow navigateur)
+openclaw models auth login --provider openai --force        # --force vire le profil bloqué
+
+# 3. Copier l'URL affichée, l'ouvrir dans le navigateur DU LAPTOP, se connecter
+#    (cyril.moron@gmail.com), approuver.
+# 4. La redirection part vers localhost:1455 → le tunnel la renvoie à la VM →
+#    le terminal capte le callback et finit le login tout seul.
+```
+- Si l'URL contient `redirect_uri=http://localhost:XXXX` avec un **autre port**, refaire le `ssh -L XXXX:localhost:XXXX`.
+- Codex 0.139 expose aussi `codex login --with-access-token` / `--with-api-key` (lecture sur stdin) si on récupère un token par un autre canal.
+- Le flow par défaut imprime l'URL **et** écoute le port même sans navigateur sur la VM — donc le tunnel suffit, aucun navigateur VM requis.
+- ⚠️ **`--force` SUPPRIME les autres profils du provider** : pour AJOUTER un 2e compte (ex. backup), login **SANS `--force`**. Pour repartir propre (token bloqué), `--force`.
+- ⚠️ **Si le terminal ne rend pas la main** après "Authentication successful" navigateur (callback `localhost:port` qui n'atteint pas le listener) : l'auth est souvent **déjà persistée quand même** → `Ctrl-C` et vérifier avec un run test. Sinon, livrer le callback à la main : `curl "<url-de-redirection-copiée>"` **depuis la VM** (le listener tourne sur la VM:localhost:port).
+- **Plusieurs profils valides = round-robin** par défaut. Pour forcer un ordre déterministe (ex. compte principal d'abord, backup en secours) : `openclaw models auth order set --agent <id> --provider openai <profil1> <profil2>` (persisté dans `auth-state.json`, `… order clear` pour revenir au round-robin).
+- **Pourquoi re-auth** : la rotation des refresh-tokens OpenAI invalide les tokens (`token_invalidated` / `refresh_token_reused`) → seuls les comptes re-signés récemment marchent. Cf. `project_codex_oauth_warmup.md` dans la mémoire.
