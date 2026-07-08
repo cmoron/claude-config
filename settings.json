@@ -4,7 +4,6 @@
     "deny": [
       "Bash(rm -rf /)",
       "Bash(rm -rf --no-preserve-root /)",
-      "Bash(sudo *)",
       "Bash(git push --force *)",
       "Bash(git push -f *)",
       "Bash(rm -rf ~*)",
@@ -22,7 +21,7 @@
     ],
     "defaultMode": "bypassPermissions"
   },
-  "model": "claude-fable-5[1m]",
+  "model": "opus[1m]",
   "hooks": {
     "PostToolUse": [
       {
