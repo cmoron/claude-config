@@ -42,11 +42,12 @@ git -C "$CWD" rev-parse --is-inside-work-tree >/dev/null 2>&1 || exit 0
 # Marque AVANT de bloquer : ne nudge qu'une fois quoi qu'il arrive ensuite.
 : > "$MARKER"
 
-# Contrat Stop hook propre : exit 0 + JSON {decision:block} sur stdout.
-# (exit 2 forcerait le tour AUSSI, mais s'afficherait comme "Stop hook error".)
-# reason = une seule chaîne ; les \n sont des échappements JSON littéraux (printf
-# %s ne les interprète pas) — pas de guillemets/backslash dans le texte, donc
-# aucun besoin de python (évite les soucis de locale sur argv en headless).
-printf '{"decision":"block","reason":"%s"}\n' \
+# Stop hook NON-bloquant : exit 0 + hookSpecificOutput.additionalContext (Stop le
+# supporte, cf. docs hooks) — injecte le rappel SANS bloquer et SANS label
+# "Stop hook error". decision:block ET exit 2 forcent bien le tour, mais TOUS
+# DEUX s'affichent en "Stop hook error" : c'est le rendu de n'importe quel blocage.
+# Texte sans " ni \ : JSON hand-write ; les \n sont des échappements JSON littéraux
+# (printf %s ne les interprète pas) — pas de python (locale argv en headless).
+printf '{"hookSpecificOutput":{"hookEventName":"Stop","additionalContext":"%s"}}\n' \
   "🔁 Backstop auto-amélioration (1×/session, cf. CLAUDE.md § Auto-amélioration).\n- Une procédure répétée (≥2-3×) ou une correction récurrente a-t-elle émergé cette session ? Si OUI → propose EN DIFF un skill neuf ou l'évolution d'un skill existant (jamais de commit auto ; revue avant écriture).\n- Sinon (mid-tâche ou rien à cristalliser) → dis-le en une ligne et continue."
 exit 0
