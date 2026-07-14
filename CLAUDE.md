@@ -38,6 +38,7 @@ Dans le doute, un cran au-dessus : un Sonnet juste du premier coup bat un Haiku 
 
 - Le minimum qui résout le problème. Pas d'abstraction "au cas où", pas de config "pour plus tard", pas de gestion d'erreur pour des cas qui ne peuvent pas arriver.
 - Pas de `catch` silencieux. Pas de `unwrap` hors tests. Une erreur remonte ou est traitée — jamais avalée.
+- Pas de magic number. Une constante se nomme, et si elle se dérive, elle se dérive : `0.5 * sqrt(2.0)`, pas `0.70710678118`. Tolérés sans nom : `0`, `1`, `-1`, et les littéraux d'un test qui les explicite déjà.
 - Édition chirurgicale : ne touche pas au code voisin qui n'a rien à voir. Si tu vois du dead code orphelin non lié, signale-le — ne le supprime pas.
 - Tests **avec** le code, pas après. Pour un bug : écris d'abord un test qui le reproduit, puis fix.
 - Le formatage passe par hooks (ruff/rustfmt/prettier) — ne relance pas manuellement.
