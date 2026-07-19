@@ -63,12 +63,11 @@ Preuve d'exécution obligatoire : tests qui passent, app qui démarre, endpoint 
 
 | Besoin | Préférence | Fallback si indispo / échec |
 |---|---|---|
-| Recherche contenu sémantique | `mgrep "query"` | `rg`, puis built-in Grep |
-| Recherche regex/littérale | `rg` | built-in Grep |
+| Recherche contenu (regex/littérale) | `rg` | built-in Grep |
 | Recherche structure (multi-lignes) | `ast-grep` / `sg` | rien d'équivalent |
 | Recherche fichiers | `fd` | built-in Glob |
 | Explorer fichier inconnu >200 lignes | sous-agent `Explore` | `Read` ciblé (offset/limit) |
-| Web | `mgrep --web --answer` | WebSearch (préviens-moi) |
+| Web | WebSearch (natif) | — |
 | Doc de lib (React, FastAPI…) | plugin `context7` | WebSearch ciblée |
 | Extraction JSON/YAML | `jq` / `yq` | jamais `cat` un gros fichier structuré |
 

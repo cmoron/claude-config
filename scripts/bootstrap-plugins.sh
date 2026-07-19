@@ -20,7 +20,6 @@ fi
 # 1. Marketplaces (l'officiel est en général auto-enregistré, mais on force pour être sûr)
 echo "→ Marketplaces"
 claude plugin marketplace add anthropics/claude-plugins-official
-claude plugin marketplace add mixedbread-ai/mgrep
 claude plugin marketplace add DietrichGebert/ponytail
 echo ""
 

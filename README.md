@@ -131,10 +131,9 @@ Les plugins sont déclarés dans `settings.json` (`enabledPlugins`) et installé
 | `skill-creator` | Méta-skill pour créer/améliorer des skills |
 | `claude-code-setup` | Recommande des automatisations Claude Code (hooks/skills/agents/MCP) adaptées au repo |
 
-**Tiers** — 2 plugins
+**Tiers** — 1 plugin
 | Plugin | Marketplace | Rôle |
 |--------|-------------|------|
-| `mgrep` | `mixedbread-ai/mgrep` | Recherche sémantique + web |
 | `ponytail` | `DietrichGebert/ponytail` | Force la solution minimale/lazy (à l'essai) |
 
 > Mémoire cross-session : assurée par la **mémoire native** de Claude Code
