@@ -69,6 +69,13 @@ termes : `AI`, `LLM`, `generated`, `assisted`, `agent`, `Copilot`, `ChatGPT`, `C
 
 - Des règles existent → **les respecter à la lettre** (divulgation ou non, sign-off, format).
 - Interdiction, ou doute non levé → **ne pas pousser** sans validation explicite de l'utilisateur.
+- **Pas de règle trouvée → divulgation par défaut, jamais silence.** Deux traces obligatoires :
+  - trailer de commit, après le `Signed-off-by` :
+    `Assisted-by: <nom du modèle> (<model-id>) via Claude Code.`
+    (ex. `Assisted-by: Claude Fable 5 (claude-fable-5) via Claude Code.`)
+  - une ligne équivalente dans le corps de la PR ou de l'issue.
+  C'est la position défendue publiquement par Cyril (conf devant la gouvernance
+  LOTUSim) : la transparence est le défaut, l'omission n'est pas neutre.
 
 Tout ce qui précède existe dans le noyau Linux ; ce ne sera pas le cas de tous les projets —
 d'où la vérif systématique plutôt qu'une hypothèse.
