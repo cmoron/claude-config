@@ -112,3 +112,23 @@ extract the vessel pose (jq) and assert the horizontal displacement.
 - **Crabbing mesh**: LOTUSim convention = mesh bow on **+y** (cf. `models-and-worlds.md`).
 - **GUI screenshot**: the `/gui/screenshot` service wants a **directory** (it
   drops a timestamped PNG there), not a file path.
+
+## Spawn dynamique via mas_cmd (le chemin generic-scenario)
+
+Test d'intégration minimal de TOUTE la chaîne (action MAS → spawn → lotus_param
+→ physics) sans l'orchestration generic-scenario complète :
+
+1. Monde : `lotusim.world` (57 lignes, `MultiAgentSystem` + physics plugin,
+   pas de vaisseau pré-placé) → action `/lotusim/mas_cmd`.
+2. Ordre conteneur (Rosetta) : node rclpy warmup → `xdyn-for-cs
+   assets/models/<m>/<m>.yml --port 1234x` → `gz sim -s -r` → driver.
+3. Driver = rejouer `Agent.send_single_mas_cmd_pose` : goal `MASCmd` avec
+   `cmd_type=CREATE_CMD`, `model_name` (dossier assets), `sdf_file=""`,
+   `vessel_name` unique, `sdf_string=<lotus_param>` généré, pose.
+   Succès = `onOpen` + `physics in domain X init completed` dans le log gz.
+
+⚠️ **Compat legacy #36** : `<connection_type>` (ancien nom d'`<interface_type>`)
+est ENCORE accepté post-#36 (« Temp support of legacy type connection_type »,
+`createDomainInterface`). Moralité : un renommage vu dans un diff n'est PAS une
+casse tant qu'on n'a pas lu le chemin de parse côté lecteur (couches de compat)
+— et on ne publie pas un verdict de casse sans un A/B runtime.
