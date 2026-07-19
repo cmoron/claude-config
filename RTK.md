@@ -33,6 +33,11 @@ Example: `git status` → `rtk git status` (transparent, 0 tokens overhead).
 Si `rtk` n'est pas dans le PATH, le hook dégrade silencieusement (cf. garde
 `command -v rtk` dans `settings.json`) — aucune commande Bash n'est bloquée.
 
+⚠️ **Pipes consommant la sortie brute** : le hook réécrit aussi les commandes
+dont la sortie alimente un autre programme (`git diff | git apply`, `… | patch`)
+→ le résumé rtk casse le consommateur. Dans ce cas : `rtk proxy <cmd>`,
+`--output=<fichier>`, ou éviter la pipe.
+
 ## Commandes natives rtk (hors de portée du hook)
 
 Le hook réécrit les commandes standard (git, cargo, pytest…) mais ne peut pas
