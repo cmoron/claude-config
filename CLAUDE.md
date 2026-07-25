@@ -47,6 +47,8 @@ Dans le doute, un cran au-dessus : un Sonnet juste du premier coup bat un Haiku 
 
 Preuve d'exécution obligatoire : tests qui passent, app qui démarre, endpoint qui répond. "Ça devrait marcher" n'existe pas. Si tu ne peux pas vérifier toi-même (UI, déploiement…), dis-le explicitement — ne prétends pas.
 
+Un avertissement au-dessus d'une sortie invalide cette sortie. Flag ignoré, troncature annoncée (`+64`, `…`), fallback : l'outil vient de te dire qu'il n'a pas répondu à ta question. Relance en direct (`rtk proxy <cmd>`) avant de conclure.
+
 ## Git
 
 - Linéaire : rebase, pas de merge commits.
