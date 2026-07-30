@@ -12,3 +12,6 @@ node_modules/
 .cache/
 __pycache__/
 .playwright-mcp/
+
+# Binaires compilés à la demande par leur wrapper
+skills/macos-control/scripts/click
