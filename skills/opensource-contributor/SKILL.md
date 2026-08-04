@@ -127,6 +127,28 @@ Donc, quand aucune issue ne couvre le problème :
 Ouvrir/fermer/commenter une issue ou une PR est public. Confirmer avec l'utilisateur avant de
 pousser — l'approbation d'une étape ne vaut pas pour la suivante.
 
+## Style des commentaires publics : IA assumée, voix humaine
+
+Deux registres, deux règles inverses — ne pas les confondre :
+
+- **Artefacts** (commits, corps de PR, corps d'issue) : l'assistance IA se **déclare**
+  (étape 4). On ne cache jamais.
+- **Commentaires conversationnels** (discussions de PR/issue, réponses aux mainteneurs) :
+  la *sensation* de lire de l'IA crispe, même quand le contenu est juste et relu par un
+  humain. Vécu : sur LOTUSim#48 (2026-08-04), un commentaire argumenté et validé s'est
+  fait répondre « please stop posting AI-generated comments » — le fond a été accepté,
+  le style a coûté le capital social.
+
+Règles pour les commentaires : **1 à 4 phrases, registre informel, un seul sujet à la
+fois**. Pas de tirets cadratins, pas de listes, pas de plan en paragraphes thématiques,
+pas de politesse trop huilée. L'argumentaire complet se garde pour l'utilisateur en
+interne ; on n'en publie que l'essentiel, et on ressort l'artillerie seulement si on
+nous la demande.
+
+⚠️ L'AI slop passe même avec une review humaine : le relecteur corrige le fond, pas la
+signature stylistique. Test final avant d'envoyer : « est-ce que j'écrirais ça à la main,
+dans un chat, à un collègue ? » Si non, raccourcir.
+
 ## Checklist express
 
 - [ ] Recherché issues **et** PRs (open+closed, plusieurs requêtes, symptôme + cause racine)
@@ -139,3 +161,5 @@ pousser — l'approbation d'une étape ne vaut pas pour la suivante.
 - [ ] Vérifié la politique sur les contributions IA → respectée
 - [ ] Issue existante liée (`Closes #N`), ou issue créée si absente
 - [ ] Feu vert utilisateur avant `gh pr create` / `gh issue create`
+- [ ] Commentaire public passé au filtre « voix humaine » (court, informel, un seul sujet) —
+      l'assistance IA se déclare dans les artefacts, elle ne se sent pas dans les commentaires
