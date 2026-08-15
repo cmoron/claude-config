@@ -3,6 +3,9 @@
 
 set -euo pipefail
 
+# Bascule agent-config : ce depot n'est plus la source deployee.
+source "$HOME/src/agent-config/scripts/legacy-installer-guard.sh" || exit $?
+
 CONFIG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$CONFIG_DIR"
 
